@@ -1,0 +1,11 @@
+{
+  "version": "16.3",
+  "date": "2026-09-24",
+  "title": "Quaderno d'Inglese V16.3",
+  "changes": [
+    "Dizionario Oxford offline ampliato (~900 voci A1–B1)",
+    "Dialoghi pronti offline in Conversazione (scenari per livello)",
+    "Suggerimenti frase e avanzamento dialogo senza Gemini",
+    "Ripeti e Oxford restano istantanei offline"
+  ]
+}

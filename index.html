@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#0f172a" id="themeColorMeta">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<title>Quaderno d'Inglese</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-flag">🇬🇧</span>
+      <div>
+        <strong>Quaderno</strong>
+        <small id="topModelHint">Gemini</small>
+      </div>
+    </div>
+    <button type="button" class="icon-btn" id="themeToggle" title="Tema" aria-label="Cambia tema">◐</button>
+  </header>
+
+  <!-- Screens -->
+  <main id="main">
+    <!-- HOME -->
+    <section class="screen active" data-screen="home">
+      <div class="hero">
+        <h1>Ciao 👋</h1>
+        <p>Studia inglese con conversazione, ripasso e AI.</p>
+      </div>
+      <div class="stats-row" id="homeStats">
+        <div class="stat"><b id="statWords">0</b><span>parole</span></div>
+        <div class="stat"><b id="statDue">0</b><span>da ripassare</span></div>
+        <div class="stat"><b id="statStreak">0</b><span>corrette</span></div>
+      </div>
+      <div class="action-grid">
+        <button type="button" class="action-card primary" data-go="talk">
+          <span class="ac-icon">💬</span>
+          <strong>Conversazione</strong>
+          <small>Parla con Gemini in streaming</small>
+        </button>
+        <button type="button" class="action-card" data-go="repeat">
+          <span class="ac-icon">🎤</span>
+          <strong>Ripeti</strong>
+          <small>Ascolta e ripeti frasi</small>
+        </button>
+        <button type="button" class="action-card" data-go="learn">
+          <span class="ac-icon">📚</span>
+          <strong>Vocabolario</strong>
+          <small>Oxford 3000 &amp; ripasso</small>
+        </button>
+        <button type="button" class="action-card" data-go="tutor">
+          <span class="ac-icon">🧠</span>
+          <strong>AI Tutor</strong>
+          <small>Domande e correzioni</small>
+        </button>
+      </div>
+      <div class="card soft" id="homeTip">
+        <strong>Suggerimento</strong>
+        <p id="homeTipText">Configura la chiave Gemini nelle Impostazioni per iniziare.</p>
+      </div>
+    </section>
+
+    <!-- TALK / CONVERSAZIONE -->
+    <section class="screen" data-screen="talk">
+      <div class="screen-head">
+        <h2>Conversazione</h2>
+        <button type="button" class="text-btn" id="clearTalk">Pulisci</button>
+      </div>
+      <div class="chip-row" id="dialogueChips">
+        <button type="button" id="dlgStart" class="chip-primary">🎬 Dialogo offline</button>
+        <button type="button" id="dlgNextHint">💡 Suggerimento</button>
+      </div>
+      <div class="chat-thread" id="talkThread">
+        <div class="empty-chat" id="talkEmpty">
+          Scrivi o detta una frase in inglese per iniziare.
+          L'insegnante corregge e risponde in streaming.
+        </div>
+      </div>
+      <div class="composer">
+        <button type="button" class="icon-btn mic" id="talkMic" title="Microfono">🎙️</button>
+        <textarea id="talkInput" rows="1" placeholder="Scrivi in inglese…" enterkeyhint="send"></textarea>
+        <button type="button" class="send-btn" id="talkSend" disabled>Invia</button>
+      </div>
+      <div class="status-line" id="talkStatus"></div>
+    </section>
+
+    <!-- REPEAT -->
+    <section class="screen" data-screen="repeat">
+      <div class="screen-head">
+        <h2>Ripeti e traduci</h2>
+        <span class="badge" id="rtDiffBadge">Diff. 3/10</span>
+      </div>
+      <div class="card center-card">
+        <p class="label">Ripeti questa frase</p>
+        <p class="sentence" id="rtSentence">Premi “Nuova frase”</p>
+        <div class="btn-row">
+          <button type="button" class="ghost-btn" id="rtListen">🔊 Ascolta</button>
+          <button type="button" class="ghost-btn" id="rtNew">Nuova frase</button>
+        </div>
+        <button type="button" class="mic-big" id="rtMic" title="Parla">🎙️</button>
+        <p class="hint" id="rtHint">Premi e ripeti</p>
+      </div>
+      <div class="card result-card" id="rtResult" hidden>
+        <div class="result-row"><span class="k">Hai detto</span><div id="rtSaid"></div></div>
+        <div class="result-row"><span class="k">Traduzione</span><div id="rtTrans" class="teal"></div></div>
+        <div class="result-row"><span class="k">Valutazione</span><div id="rtVerdict"></div></div>
+      </div>
+      <div class="status-line" id="rtStatus"></div>
+      <div class="diff-control">
+        <label>Difficoltà <b id="rtDiffVal">3</b></label>
+        <input type="range" id="rtDiff" min="1" max="10" value="3">
+      </div>
+    </section>
+
+    <!-- LEARN / VOCAB -->
+    <section class="screen" data-screen="learn">
+      <div class="screen-head">
+        <h2>Vocabolario</h2>
+      </div>
+      <div class="seg-control" id="learnTabs">
+        <button type="button" class="seg active" data-mode="review">Ripasso</button>
+        <button type="button" class="seg" data-mode="oxford">Oxford</button>
+        <button type="button" class="seg" data-mode="list">Elenco</button>
+      </div>
+
+      <div class="learn-panel active" data-mode="review">
+        <div class="card center-card" id="reviewCard">
+          <p class="label" id="reviewMeta">Nessuna parola</p>
+          <p class="sentence" id="reviewWord">—</p>
+          <p class="trans" id="reviewTrans" hidden></p>
+          <div class="btn-row" id="reviewRevealRow">
+            <button type="button" class="primary-btn" id="reviewReveal">Mostra</button>
+          </div>
+          <div class="rate-row" id="reviewRates" hidden>
+            <button type="button" class="rate-btn" data-q="1">Difficile</button>
+            <button type="button" class="rate-btn" data-q="3">Ok</button>
+            <button type="button" class="rate-btn" data-q="5">Facile</button>
+          </div>
+        </div>
+        <p class="hint center" id="reviewEmpty">Aggiungi parole dalla conversazione o da Oxford.</p>
+      </div>
+
+      <div class="learn-panel" data-mode="oxford">
+        <div class="oxford-toolbar">
+          <select id="oxfordLevel">
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+            <option value="all">Tutti</option>
+          </select>
+          <button type="button" class="ghost-btn" id="oxfordNext">Prossima</button>
+        </div>
+        <div class="card center-card" id="oxfordCard">
+          <p class="label" id="oxfordPos">—</p>
+          <p class="sentence" id="oxfordWord">—</p>
+          <p class="trans" id="oxfordTrans">…</p>
+          <p class="example" id="oxfordEx"></p>
+          <div class="btn-row">
+            <button type="button" class="ghost-btn" id="oxfordSpeak">🔊</button>
+            <button type="button" class="primary-btn" id="oxfordAdd">+ Vocabolario</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="learn-panel" data-mode="list">
+        <div class="list-add">
+          <input type="text" id="manualWord" placeholder="Parola in inglese">
+          <input type="text" id="manualTrans" placeholder="Traduzione IT">
+          <button type="button" class="primary-btn" id="manualAdd">Aggiungi</button>
+        </div>
+        <div class="vocab-list" id="vocabList"></div>
+      </div>
+    </section>
+
+    <!-- TUTOR -->
+    <section class="screen" data-screen="tutor">
+      <div class="screen-head">
+        <h2>AI Tutor</h2>
+        <button type="button" class="text-btn" id="tutorReset">Reset</button>
+      </div>
+      <div class="chat-thread" id="tutorThread">
+        <div class="empty-chat">Premi un prompt rapido o scrivi una domanda.</div>
+      </div>
+      <div class="chip-row" id="tutorChips">
+        <button type="button" data-prompt="Fammi una domanda semplice da rispondere in inglese (livello A1).">Domanda A1</button>
+        <button type="button" data-prompt="Correggi questa frase e spiega in italiano: ">Correggi frase</button>
+        <button type="button" data-prompt="Spiegami in italiano la differenza tra present simple e present continuous, con 2 esempi.">Grammatica</button>
+      </div>
+      <div class="composer">
+        <textarea id="tutorInput" rows="1" placeholder="Chiedi al tutor…"></textarea>
+        <button type="button" class="send-btn" id="tutorSend">Invia</button>
+      </div>
+      <div class="status-line" id="tutorStatus"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="screen" data-screen="settings">
+      <div class="screen-head"><h2>Impostazioni</h2></div>
+
+      <div class="card settings-card">
+        <h3>Gemini</h3>
+        <label class="field">
+          <span>API Key</span>
+          <input type="password" id="apiKey" placeholder="Incolla la tua chiave" autocomplete="off">
+        </label>
+        <div class="btn-row">
+          <button type="button" class="primary-btn" id="saveKey">Salva</button>
+          <button type="button" class="ghost-btn" id="clearKey">Cancella</button>
+          <button type="button" class="ghost-btn" id="verifyKey">Verifica</button>
+        </div>
+        <p class="hint" id="keyStatus">Chiave non configurata</p>
+        <label class="field">
+          <span>Modello</span>
+          <select id="model">
+            <option value="gemini-3.6-flash" selected>Gemini 3.6 Flash</option>
+            <option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
+            <option value="gemini-3.7-flash">Gemini 3.7 Flash</option>
+            <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
+            <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite</option>
+          </select>
+        </label>
+        <p class="hint">Lo streaming usa <code>streamGenerateContent</code>. In caso di errore prova un modello diverso.</p>
+      </div>
+
+      <div class="card settings-card">
+        <h3>Studio</h3>
+        <label class="field">
+          <span>Livello</span>
+          <select id="level">
+            <option value="A1">A1 — Base</option>
+            <option value="A2">A2 — Elementare</option>
+            <option value="B1">B1 — Intermedio</option>
+            <option value="B2">B2 — Intermedio alto</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Tema conversazione (opzionale)</span>
+          <input type="text" id="topic" placeholder="es. viaggi, lavoro, cibo">
+        </label>
+        <label class="toggle">
+          <span>Lettura automatica risposte</span>
+          <input type="checkbox" id="autoSpeak" checked>
+        </label>
+        <label class="toggle">
+          <span>Frasi offline (Ripeti senza Gemini)</span>
+          <input type="checkbox" id="offlineSentences" checked>
+        </label>
+        <label class="toggle">
+          <span>Traduzioni Oxford offline</span>
+          <input type="checkbox" id="offlineOxford" checked>
+        </label>
+        <label class="field">
+          <span>Velocità voce <b id="rateVal">0.95</b></span>
+          <input type="range" id="speechRate" min="0.7" max="1.2" step="0.05" value="0.95">
+        </label>
+      </div>
+
+      <div class="card settings-card">
+        <h3>Dati</h3>
+        <p class="hint">Tutto resta su questo dispositivo (localStorage).</p>
+        <div class="btn-row">
+          <button type="button" class="ghost-btn" id="exportData">Esporta JSON</button>
+          <button type="button" class="ghost-btn" id="importData">Importa</button>
+          <button type="button" class="ghost-btn danger" id="wipeData">Azzera</button>
+        </div>
+        <input type="file" id="importFile" accept="application/json" hidden>
+      </div>
+
+      <p class="version">Quaderno d'Inglese V16 · streaming · offline PWA</p>
+    </section>
+  </main>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button type="button" data-screen="home" class="active"><span>🏠</span>Home</button>
+    <button type="button" data-screen="talk"><span>💬</span>Parla</button>
+    <button type="button" data-screen="learn"><span>📚</span>Impara</button>
+    <button type="button" data-screen="settings"><span>⚙️</span>Set</button>
+  </nav>
+</div>
+
+<script src="data/oxford3000.js"></script>
+<script src="data/oxford-it.js"></script>
+<script src="data/sentences.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
