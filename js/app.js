@@ -55,6 +55,40 @@
     } catch (_) {}
   }
 
+  function loadStats() {
+    return loadJSON(STORAGE.stats, {
+      minutes: 0,
+      sessions: 0,
+      talkTurns: 0,
+      rtDone: 0,
+      lastDay: '',
+      streak: 0,
+      days: {}
+    });
+  }
+
+  function touchStudy(minutes, kind) {
+    const s = loadStats();
+    const day = new Date().toISOString().slice(0, 10);
+    if (s.lastDay && s.lastDay !== day) {
+      const prev = new Date(s.lastDay + 'T12:00:00');
+      const cur = new Date(day + 'T12:00:00');
+      const diff = Math.round((cur - prev) / 86400000);
+      s.streak = diff === 1 ? (s.streak || 0) + 1 : 1;
+    } else if (!s.lastDay) {
+      s.streak = 1;
+    }
+    s.lastDay = day;
+    s.minutes = (s.minutes || 0) + (minutes || 0);
+    if (kind === 'session') s.sessions = (s.sessions || 0) + 1;
+    if (kind === 'talk') s.talkTurns = (s.talkTurns || 0) + 1;
+    if (kind === 'rt') s.rtDone = (s.rtDone || 0) + 1;
+    s.days = s.days || {};
+    s.days[day] = (s.days[day] || 0) + (minutes || 1);
+    saveJSON(STORAGE.stats, s);
+    return s;
+  }
+
   function getKey() {
     return (
       (localStorage.getItem(STORAGE.key) || '').trim() ||
@@ -1361,20 +1395,21 @@
 
   // ─── Wire events ─────────────────────────────────────────
   function init() {
-    initTheme();
-    loadSettings();
-    filterOxford();
-    updateHome();
-    nextReview();
-    showOxfordCard();
+    try { initTheme(); } catch (e) { console.warn(e); }
+    try { loadSettings(); } catch (e) { console.warn(e); }
+    try { filterOxford(); } catch (e) { console.warn(e); }
 
-    // Nav
+    // Nav FIRST so UI always works even if other init fails
     $$('#bottomNav button').forEach((b) =>
       b.addEventListener('click', () => showScreen(b.dataset.screen))
     );
     $$('[data-go]').forEach((b) =>
       b.addEventListener('click', () => showScreen(b.dataset.go))
     );
+
+    try { updateHome(); } catch (e) { console.warn(e); }
+    try { nextReview(); } catch (e) { console.warn(e); }
+    try { showOxfordCard(); } catch (e) { console.warn(e); }
 
     // Theme
     $('#themeToggle').addEventListener('click', () => {
