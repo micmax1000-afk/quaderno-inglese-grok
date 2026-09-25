@@ -171,6 +171,50 @@
     speechSynthesis.speak(u);
   }
 
+  /** Pronuncia in sequenza senza cancellare le successive. items: [{text, lang}] */
+  function speakSequence(items, onDone) {
+    if (!('speechSynthesis' in window)) {
+      if (onDone) setTimeout(onDone, 400);
+      return;
+    }
+    speechSynthesis.cancel();
+    const list = (items || []).filter((x) => x && x.text && String(x.text).trim());
+    if (!list.length) {
+      if (onDone) onDone();
+      return;
+    }
+    let i = 0;
+    const play = () => {
+      if (i >= list.length) {
+        if (onDone) onDone();
+        return;
+      }
+      const item = list[i++];
+      const u = new SpeechSynthesisUtterance(String(item.text).trim());
+      u.lang = item.lang || 'en-US';
+      u.rate = speechRate() * (item.lang && /^it/i.test(item.lang) ? 0.95 : 1);
+      if (voiceEn && /^en/i.test(u.lang)) u.voice = voiceEn;
+      u.onend = () => setTimeout(play, item.pauseAfter || 350);
+      u.onerror = () => setTimeout(play, 200);
+      speechSynthesis.speak(u);
+    };
+    play();
+  }
+
+  function speakOxfordPair(enWord, itText, onDone) {
+    const it = String(itText || '')
+      .replace(/^\(+|\)+$/g, '')
+      .replace(/^(nessuna|traduzione).*/i, '')
+      .trim();
+    const items = [{ text: enWord, lang: 'en-US', pauseAfter: 450 }];
+    if (it && it !== '…' && it !== '—' && !it.startsWith('(')) {
+      // prendi solo la prima traduzione se multiple (slash)
+      const firstIt = it.split('/')[0].split('·')[0].trim();
+      if (firstIt) items.push({ text: firstIt, lang: 'it-IT', pauseAfter: 200 });
+    }
+    speakSequence(items, onDone);
+  }
+
   // ─── Gemini core (streaming + non-streaming) ─────────────
   function extractJson(raw) {
     const text = String(raw || '').trim();
@@ -453,14 +497,21 @@
     const courseProg = loadCourseProgress();
     const courseTotal = (window.COURSE_A1 && window.COURSE_A1.lessons) ? window.COURSE_A1.lessons.length : 0;
     const courseDone = courseTotal ? Object.keys(courseProg.done || {}).length : 0;
+    const homeCourseSub = $('#homeCourseSub');
+    if (homeCourseSub && courseTotal) {
+      homeCourseSub.textContent =
+        courseDone >= courseTotal
+          ? 'Completato · puoi ripetere'
+          : courseDone + '/' + courseTotal + ' lezioni · continua';
+    }
     if (!getKey()) {
-      tip.textContent = 'Puoi studiare offline (Corso A1, Ripeti, Oxford). Per l’AI aggiungi la chiave Gemini.';
+      tip.textContent = 'Inizia dal Corso in alto (offline). Per l’AI aggiungi la chiave Gemini in Impostazioni.';
+    } else if (courseDone < courseTotal) {
+      tip.textContent = `Corso: ${courseDone}/${courseTotal} lezioni. Tocca la card in alto per continuare.`;
     } else if (dueCards().length > 0) {
       tip.textContent = `Hai ${dueCards().length} parole da ripassare oggi.`;
-    } else if (courseDone < courseTotal) {
-      tip.textContent = `Corso A1: ${courseDone}/${courseTotal} lezioni. Continua quando vuoi.`;
     } else {
-      tip.textContent = 'Inizia una conversazione o esplora Oxford 3000.';
+      tip.textContent = 'Corso completato. Prova Oxford o una conversazione.';
     }
   }
 
@@ -1020,46 +1071,44 @@
       clearTimeout(oxfordAutoTimer);
       oxfordAutoTimer = null;
     }
+    oxfordAutoToken++;
   }
 
-  function scheduleOxfordAuto(word) {
-    clearOxfordAuto();
-    const auto = $('#oxfordAuto')?.checked !== false;
+  /** Dopo EN+IT: se auto ON aspetta a lungo e passa avanti; se OFF lascia decidere all'utente */
+  function afterOxfordSpoken(token) {
     const hint = $('#oxfordAutoHint');
+    const auto = $('#oxfordAuto')?.checked === true;
     if (!auto) {
-      if (hint) hint.textContent = 'Auto disattivo — usa Prossima';
+      if (hint) {
+        hint.textContent =
+          (oxfordIdx + 1) +
+          '/' +
+          Math.max(1, oxfordFiltered.length) +
+          ' · Ascolta, poi + Vocabolario oppure Prossima';
+      }
       return;
     }
-    if (hint) hint.textContent = 'Pronuncia… poi prossima parola';
-    const token = ++oxfordAutoToken;
-    // Speak, then advance after utterance ends (fallback timeout)
-    let advanced = false;
-    const advance = () => {
-      if (advanced || token !== oxfordAutoToken) return;
-      advanced = true;
-      if ($('#oxfordAuto')?.checked === false) return;
+    if (hint) hint.textContent = 'Auto: prossima tra pochi secondi… (tocca per annullare)';
+    // Tempo lungo per decidere / ascoltare
+    oxfordAutoTimer = setTimeout(() => {
+      if (token !== oxfordAutoToken) return;
+      if ($('#oxfordAuto')?.checked !== true) return;
       oxfordIdx = (oxfordIdx + 1) % Math.max(1, oxfordFiltered.length);
       showOxfordCard();
-    };
-    if (word && word !== '—') {
-      speak(word, 'en-US');
-      // speechSynthesis onend is unreliable across mobile browsers → also timeout
-      oxfordAutoTimer = setTimeout(advance, 2800);
-      try {
-        if ('speechSynthesis' in window) {
-          const check = setInterval(() => {
-            if (!speechSynthesis.speaking) {
-              clearInterval(check);
-              // small pause then next
-              oxfordAutoTimer = setTimeout(advance, 600);
-            }
-          }, 200);
-          setTimeout(() => clearInterval(check), 5000);
-        }
-      } catch (_) {}
-    } else {
-      oxfordAutoTimer = setTimeout(advance, 1500);
+    }, 6500);
+  }
+
+  function playOxfordAudio(enWord, itText) {
+    const token = ++oxfordAutoToken;
+    const hint = $('#oxfordAutoHint');
+    if (hint) {
+      hint.textContent =
+        (oxfordIdx + 1) +
+        '/' +
+        Math.max(1, oxfordFiltered.length) +
+        ' · Pronuncio inglese e italiano…';
     }
+    speakOxfordPair(enWord, itText, () => afterOxfordSpoken(token));
   }
 
   async function showOxfordCard() {
@@ -1078,9 +1127,7 @@
     // progress within filtered set
     const hint = $('#oxfordAutoHint');
     if (hint) {
-      hint.textContent =
-        oxfordIdx + 1 + '/' + oxfordFiltered.length +
-        ($('#oxfordAuto')?.checked !== false ? ' · auto + pronuncia' : '');
+      hint.textContent = oxfordIdx + 1 + '/' + oxfordFiltered.length + ' · carico…';
     }
     $('#oxfordTrans').textContent = '…';
     $('#oxfordEx').textContent = '';
@@ -1092,7 +1139,7 @@
     const finish = (translation, example) => {
       $('#oxfordTrans').textContent = translation || '—';
       $('#oxfordEx').textContent = example || '';
-      scheduleOxfordAuto(c.word);
+      playOxfordAudio(c.word, translation || '');
     };
 
     // 1) localStorage cache
@@ -1118,7 +1165,7 @@
 
     if (!getKey()) {
       $('#oxfordTrans').textContent = '(nessuna traduzione offline — configura Gemini)';
-      scheduleOxfordAuto(c.word);
+      playOxfordAudio(c.word, '');
       return;
     }
 
@@ -1142,7 +1189,7 @@
       if (off) finish(off.translation, off.example);
       else {
         $('#oxfordTrans').textContent = '(traduzione non disponibile)';
-        scheduleOxfordAuto(c.word);
+        playOxfordAudio(c.word, '');
       }
     }
   }
@@ -1670,26 +1717,37 @@
       filterOxford();
       showOxfordCard();
     });
-    $('#oxfordNext').addEventListener('click', () => {
+    const goNextOxford = () => {
       clearOxfordAuto();
+      try {
+        if ('speechSynthesis' in window) speechSynthesis.cancel();
+      } catch (_) {}
       oxfordIdx = (oxfordIdx + 1) % Math.max(1, oxfordFiltered.length);
       showOxfordCard();
-    });
+    };
+    $('#oxfordNext').addEventListener('click', goNextOxford);
+    $('#oxfordNext2')?.addEventListener('click', goNextOxford);
     $('#oxfordAuto')?.addEventListener('change', () => {
       const hint = $('#oxfordAutoHint');
       if ($('#oxfordAuto').checked) {
-        if (hint) hint.textContent = 'Auto attivo';
-        const w = $('#oxfordWord')?.textContent;
-        if (w && w !== '—') scheduleOxfordAuto(w);
+        if (hint) hint.textContent = 'Auto lento attivo: dopo EN+IT aspetta ~6s e passa avanti';
       } else {
         clearOxfordAuto();
-        if (hint) hint.textContent = 'Auto disattivo — usa Prossima';
+        if (hint) hint.textContent = 'Auto spento — scegli tu: + Vocabolario o Prossima';
       }
     });
     $('#oxfordLevel')?.addEventListener('change', () => clearOxfordAuto());
     $('#oxfordSpeak').addEventListener('click', () => {
+      clearOxfordAuto();
       const w = $('#oxfordWord').textContent;
-      if (w && w !== '—') speak(w);
+      const t = $('#oxfordTrans').textContent;
+      if (w && w !== '—') playOxfordAudio(w, t || '');
+    });
+    // Tocco sulla card annulla auto-avanza
+    $('#oxfordCard')?.addEventListener('click', () => {
+      if ($('#oxfordAuto')?.checked) {
+        /* non cancellare al primo tocco sui bottoni: gestito dai bottoni */
+      }
     });
     $('#oxfordAdd').addEventListener('click', () => {
       const w = $('#oxfordWord').textContent;

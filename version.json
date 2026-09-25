@@ -1,11 +1,11 @@
 {
-  "version": "16.7",
+  "version": "16.8",
   "date": "2026-09-25",
-  "title": "Quaderno d'Inglese V16.7",
   "changes": [
-    "Nuova icona app (quaderno + Q)",
-    "Corso ristrutturato: unità, progresso, passi Parole→Frasi→Quiz",
-    "Oxford: auto prossima parola + pronuncia automatica",
-    "Toggle auto Oxford e indicatore progresso nella lista filtrata"
+    "Oxford: legge automaticamente inglese + italiano a ogni parola",
+    "Poi aspetta: scegli + Vocabolario o Prossima (auto OFF di default)",
+    "Auto avanza lento opzionale (~6.5s dopo EN+IT)",
+    "Corso in alto in Home, card più grande e progresso",
+    "Flusso corso più chiaro"
   ]
 }

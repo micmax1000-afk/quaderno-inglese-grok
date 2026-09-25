@@ -706,3 +706,19 @@ code {
 .cstep.done span { background:rgba(52,211,153,.2); color:var(--ok); }
 .course-nav-btns { display:grid; grid-template-columns:1fr 1.4fr; gap:8px; margin-top:14px; }
 .oxford-auto-toggle { margin:4px 0 8px; padding:10px 12px; background:var(--surface); border:1px solid var(--line); border-radius:12px; }
+
+.course-home-card {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(56,189,248,.14), rgba(129,140,248,.12));
+  border-color: rgba(56,189,248,.35);
+}
+.oxford-actions {
+  display: grid !important;
+  grid-template-columns: 1fr 1.3fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+.oxford-actions .primary-btn,
+.oxford-actions .ghost-btn { width: 100%; }
+#oxfordWord { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+#oxfordTrans { font-size: 18px; color: var(--teal); min-height: 1.4em; }

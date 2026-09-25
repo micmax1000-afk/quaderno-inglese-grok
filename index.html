@@ -45,30 +45,30 @@
         <div class="stat"><b id="statMinutes">0</b><span>minuti</span></div>
       </div>
       <div class="action-grid">
-        <button type="button" class="action-card primary" data-go="talk">
+        <button type="button" class="action-card primary course-home-card" data-go="course">
+          <span class="ac-icon">📖</span>
+          <strong>Corso A1–A2</strong>
+          <small id="homeCourseSub">18 lezioni · offline</small>
+        </button>
+        <button type="button" class="action-card" data-go="talk">
           <span class="ac-icon">💬</span>
           <strong>Conversazione</strong>
-          <small>Parla con Gemini in streaming</small>
+          <small>Parla con Gemini</small>
         </button>
         <button type="button" class="action-card" data-go="repeat">
           <span class="ac-icon">🎤</span>
           <strong>Ripeti</strong>
-          <small>Ascolta e ripeti frasi</small>
+          <small>Ascolta e ripeti</small>
         </button>
         <button type="button" class="action-card" data-go="learn">
           <span class="ac-icon">📚</span>
-          <strong>Vocabolario</strong>
-          <small>Oxford 3000 &amp; ripasso</small>
+          <strong>Oxford / Vocabolario</strong>
+          <small>Parole + ripasso</small>
         </button>
         <button type="button" class="action-card" data-go="tutor">
           <span class="ac-icon">🧠</span>
           <strong>AI Tutor</strong>
           <small>Domande e correzioni</small>
-        </button>
-        <button type="button" class="action-card" data-go="course">
-          <span class="ac-icon">📖</span>
-          <strong>Corso A1</strong>
-          <small>18 lezioni offline</small>
         </button>
       </div>
       <div class="card soft" id="homeTip">
@@ -169,19 +169,20 @@
           <button type="button" class="ghost-btn" id="oxfordNext">Prossima</button>
         </div>
         <label class="toggle oxford-auto-toggle">
-          <span>Auto: prossima + pronuncia</span>
-          <input type="checkbox" id="oxfordAuto" checked>
+          <span>Auto avanza (lento)</span>
+          <input type="checkbox" id="oxfordAuto">
         </label>
         <div class="card center-card" id="oxfordCard">
           <p class="label" id="oxfordPos">—</p>
           <p class="sentence" id="oxfordWord">—</p>
           <p class="trans" id="oxfordTrans">…</p>
           <p class="example" id="oxfordEx"></p>
-          <div class="btn-row">
-            <button type="button" class="ghost-btn" id="oxfordSpeak">🔊</button>
+          <div class="btn-row oxford-actions">
+            <button type="button" class="ghost-btn" id="oxfordSpeak">🔊 EN+IT</button>
             <button type="button" class="primary-btn" id="oxfordAdd">+ Vocabolario</button>
+            <button type="button" class="ghost-btn" id="oxfordNext2">Prossima →</button>
           </div>
-          <p class="hint center" id="oxfordAutoHint">Auto attivo: passa alla prossima dopo la pronuncia</p>
+          <p class="hint center" id="oxfordAutoHint">Ascolta EN e IT, poi scegli: salva o prossima</p>
         </div>
       </div>
 
@@ -219,20 +220,20 @@
     <!-- COURSE A1 -->
     <section class="screen" data-screen="course">
       <div class="screen-head">
-        <h2>Corso</h2>
+        <h2>Corso A1–A2</h2>
         <span class="badge" id="courseProgressBadge">0/18</span>
       </div>
       <div class="card course-hero">
         <div class="course-hero-top">
           <div>
-            <span class="label">Percorso A1 → A2</span>
-            <strong id="courseHeroTitle">18 lezioni offline</strong>
+            <span class="label">Studia offline, passo dopo passo</span>
+            <strong id="courseHeroTitle">18 lezioni</strong>
           </div>
           <div class="course-ring" id="courseRing"><span id="courseRingPct">0%</span></div>
         </div>
         <div class="course-progress-bar"><i id="courseProgressBar" style="width:0%"></i></div>
-        <p class="hint" id="courseHeroHint">Parole → Frasi → Quiz. Tutto senza internet.</p>
-        <button type="button" class="primary-btn" id="courseContinue" style="width:100%;margin-top:10px">Continua</button>
+        <p class="hint" id="courseHeroHint">Ogni lezione: Parole → Frasi → Quiz</p>
+        <button type="button" class="primary-btn" id="courseContinue" style="width:100%;margin-top:10px">Inizia</button>
       </div>
       <div class="course-units" id="courseUnits"></div>
       <div id="courseList" class="course-list"></div>
