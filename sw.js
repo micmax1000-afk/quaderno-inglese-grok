@@ -1,4 +1,4 @@
-const CACHE = 'quaderno-inglese-v16-15';
+const CACHE = 'quaderno-inglese-v16-16';
 const CORE = [
   './',
   './index.html',

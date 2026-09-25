@@ -1,8 +1,9 @@
 {
-  "version": "16.15",
+  "version": "16.16",
   "date": "2026-09-25",
   "changes": [
-    "Ascolto: + taxi, stazione/treno, meteo, bar, farmacia (11 temi viaggio)",
-    "Scrivi: +4 prompt; feedback offline + correzione Gemini con versione corretta e traduzione IT"
+    "Conversazione: traduzione italiana sotto ogni risposta AI",
+    "Oxford non parte più all’apertura app; auto off; audio solo nel tab Oxford",
+    "Scrivi: feedback più leggibile (card, badge, contrasto)"
   ]
 }

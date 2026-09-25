@@ -195,17 +195,19 @@
     const hit = keys.filter((k) => lower.includes(k.toLowerCase()));
     const score = keys.length ? Math.round((hit.length / keys.length) * 100) : 50;
     let msg = '';
-    if (score >= 70) msg = '✅ Buon lavoro: hai usato diverse strutture utili.';
-    else if (score >= 40) msg = '🟡 Ok: prova ad aggiungere altre espressioni dai consigli.';
-    else msg = '🔴 Incompleta: rileggi i consigli e l’esempio, poi riprova.';
+    if (score >= 70) msg = 'Buon lavoro: hai usato diverse strutture utili.';
+    else if (score >= 40) msg = 'Ok: prova ad aggiungere altre espressioni dai consigli.';
+    else msg = 'Incompleta: rileggi i consigli e l’esempio, poi riprova.';
+    const badge = score >= 70 ? 'ok' : score >= 40 ? 'mid' : 'low';
     return (
-      '<p><strong>Feedback offline</strong> — parole chiave ~' + score + '%</p>' +
-      '<p>' + msg + '</p>' +
-      (hit.length ? '<p class="teal">Trovate: ' + hit.join(', ') + '</p>' : '') +
-      '<p class="label">Esempio modello</p><pre class="example-block">' +
-      (p.example || '') +
-      '</pre>' +
-      '<p class="hint">Confronta la tua versione con l’esempio. Non deve essere identica.</p>'
+      '<div class="wf-card">' +
+      '<div class="wf-badge ' + badge + '">Offline · ' + score + '%</div>' +
+      '<p class="wf-msg">' + msg + '</p>' +
+      (hit.length ? '<p class="wf-keys">Parole usate: <strong>' + hit.join(', ') + '</strong></p>' : '') +
+      '<div class="wf-section"><span class="wf-label">Esempio modello</span>' +
+      '<div class="wf-example">' + escapeHtml(p.example || '') + '</div></div>' +
+      '<p class="wf-hint">Non deve essere identico: confronta idee e strutture.</p>' +
+      '</div>'
     );
   }
 
@@ -267,24 +269,25 @@
       if (corrected || translation || tips.length) {
         fb.innerHTML =
           offlineWriteFeedback(p, text) +
-          '<hr style="border:none;border-top:1px solid var(--border,#334155);margin:12px 0">' +
-          '<p><strong>Correzione AI</strong>' +
-          (score !== '' ? ' — score ' + score + '/100' : '') +
-          '</p>' +
-          (praise ? '<p>' + praise + '</p>' : '') +
+          '<div class="wf-card ai">' +
+          '<div class="wf-badge ok">Correzione AI' +
+          (score !== '' ? ' · ' + score + '/100' : '') +
+          '</div>' +
+          (praise ? '<p class="wf-msg">' + escapeHtml(String(praise)) + '</p>' : '') +
           (corrected
-            ? '<p class="label">Versione corretta</p><pre class="example-block">' +
-              corrected +
-              '</pre>'
+            ? '<div class="wf-section"><span class="wf-label">Versione corretta (EN)</span>' +
+              '<div class="wf-example">' + escapeHtml(String(corrected)) + '</div></div>'
             : '') +
           (translation
-            ? '<p class="label">Traduzione IT</p><p class="teal">' + translation + '</p>'
+            ? '<div class="wf-section"><span class="wf-label">Traduzione (IT)</span>' +
+              '<div class="wf-it">' + escapeHtml(String(translation)) + '</div></div>'
             : '') +
           (tips.length
-            ? '<p class="label">Consigli AI</p><ul>' +
-              tips.map((t) => '<li>' + t + '</li>').join('') +
-              '</ul>'
-            : '');
+            ? '<div class="wf-section"><span class="wf-label">Consigli</span><ul class="wf-tips">' +
+              tips.map((t) => '<li>' + escapeHtml(String(t)) + '</li>').join('') +
+              '</ul></div>'
+            : '') +
+          '</div>';
       }
     } catch (e) {
       const h = $('#writeAiHint');
@@ -870,31 +873,34 @@
     try {
       // Try to show progressive text while streaming (raw JSON builds up)
       const result = await callGeminiStream(talkSystem(), text, talkHistory, (acc) => {
-        // Try to extract partial "reply" for nicer UX
         const m = acc.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/);
         if (m) {
           try {
-            bubble.textContent = JSON.parse('"' + m[1] + '"');
+            setTalkBubbleContent(bubble, JSON.parse('"' + m[1] + '"'), '');
           } catch {
-            bubble.textContent = m[1];
+            setTalkBubbleContent(bubble, m[1], '');
           }
         } else {
-          bubble.textContent = 'Scrivendo…';
+          setTalkBubbleContent(bubble, 'Scrivendo…', '');
         }
         $('#talkThread').scrollTop = $('#talkThread').scrollHeight;
       });
 
       talkHistory.push({ role: 'user', text });
       bubble.classList.remove('streaming');
-      bubble.textContent = '';
       const reply = result.reply || '(nessuna risposta)';
-      bubble.textContent = reply;
-      const btn = document.createElement('button');
-      btn.className = 'speak';
-      btn.type = 'button';
-      btn.textContent = '🔊';
-      btn.onclick = () => speak(reply);
-      bubble.appendChild(btn);
+      const translation = result.translation || result.italian || result.trans || '';
+      setTalkBubbleContent(bubble, reply, translation);
+      if (!bubble.querySelector('.speak')) {
+        const btn = document.createElement('button');
+        btn.className = 'speak';
+        btn.type = 'button';
+        btn.textContent = '🔊';
+        btn.onclick = () => speak(reply);
+        bubble.appendChild(btn);
+      } else {
+        bubble.querySelector('.speak').onclick = () => speak(reply);
+      }
 
       // Insert corrections before the reply bubble
       const thread = $('#talkThread');
@@ -1383,7 +1389,17 @@
     const finish = (translation, example) => {
       $('#oxfordTrans').textContent = translation || '—';
       $('#oxfordEx').textContent = example || '';
-      playOxfordAudio(c.word, translation || '');
+      // Pronuncia solo se il pannello Oxford è attivo e l'utente ha chiesto una carta
+      const oxPanel = document.querySelector('.learn-panel[data-mode="oxford"]');
+      const oxActive = oxPanel && oxPanel.classList.contains('active');
+      const learnActive = document.querySelector('.screen[data-screen="learn"]')?.classList.contains('active');
+      if (oxActive && learnActive) {
+        playOxfordAudio(c.word, translation || '');
+      } else if ($('#oxfordAutoHint')) {
+        $('#oxfordAutoHint').textContent =
+          (oxfordIdx + 1) + '/' + Math.max(1, oxfordFiltered.length) +
+          ' · Tocca 🔊 EN+IT per ascoltare';
+      }
     };
 
     // 1) localStorage cache
@@ -1409,7 +1425,10 @@
 
     if (!getKey()) {
       $('#oxfordTrans').textContent = '(nessuna traduzione offline — configura Gemini)';
-      playOxfordAudio(c.word, '');
+      const oxPanel = document.querySelector('.learn-panel[data-mode="oxford"]');
+      const oxActive = oxPanel && oxPanel.classList.contains('active');
+      const learnActive = document.querySelector('.screen[data-screen="learn"]')?.classList.contains('active');
+      if (oxActive && learnActive) playOxfordAudio(c.word, '');
       return;
     }
 
@@ -1908,7 +1927,22 @@
 
     try { updateHome(); } catch (e) { console.warn(e); }
     try { nextReview(); } catch (e) { console.warn(e); }
-    try { showOxfordCard(); } catch (e) { console.warn(e); }
+    // Oxford: NON avviare audio/carta all'apertura app — solo quando l'utente apre Oxford
+    try { filterOxford(); } catch (e) { console.warn(e); }
+    try {
+      if ($('#oxfordAuto')) $('#oxfordAuto').checked = false;
+      const ow = $('#oxfordWord');
+      if (ow && (ow.textContent === '—' || !ow.textContent.trim())) {
+        $('#oxfordWord').textContent = 'Tocca «Prossima» per iniziare';
+        if ($('#oxfordTrans')) $('#oxfordTrans').textContent = '';
+        if ($('#oxfordPos')) $('#oxfordPos').textContent = 'Oxford pronto';
+        if ($('#oxfordAutoHint')) {
+          const n = (oxfordFiltered || []).length || (oxfordCards() || []).length;
+          $('#oxfordAutoHint').textContent =
+            n + ' parole nel filtro · auto disattivato · scegli il livello e Prossima';
+        }
+      }
+    } catch (e) { console.warn(e); }
 
     // Theme
     $('#themeToggle').addEventListener('click', () => {
@@ -2028,6 +2062,12 @@
         if (b.dataset.mode === 'review') nextReview();
         if (b.dataset.mode === 'list') renderVocabList();
         if (b.dataset.mode === 'write') initWritePanel();
+        if (b.dataset.mode === 'oxford') {
+          if ($('#oxfordAuto')) $('#oxfordAuto').checked = false;
+          clearOxfordAuto();
+          // carica carta senza forzare auto-avanzo; audio solo se già su Oxford
+          showOxfordCard();
+        }
       })
     );
 
