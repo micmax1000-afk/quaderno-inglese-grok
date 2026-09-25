@@ -1399,8 +1399,10 @@
     const data = window.COURSE_A1;
     const list = $('#courseList');
     const lessonView = $('#courseLesson');
+    const overview = $('#courseOverview');
     if (!data || !list) return;
-    lessonView.hidden = true;
+    if (overview) overview.hidden = false;
+    if (lessonView) lessonView.hidden = true;
     list.hidden = false;
     const unitsEl = $('#courseUnits');
     if (unitsEl) {
@@ -1475,77 +1477,137 @@
       .join('');
   }
 
-  function setCourseStep(tab) {
-    $$('#courseSteps .cstep').forEach((b) => b.classList.toggle('active', b.dataset.ctab === tab));
-    $('#courseWords').hidden = tab !== 'words';
-    $('#coursePhrases').hidden = tab !== 'phrases';
-    $('#courseQuiz').hidden = tab !== 'quiz';
-    const order = ['words', 'phrases', 'quiz'];
-    const idx = order.indexOf(tab);
-    const badge = $('#courseStepBadge');
-    if (badge) badge.textContent = idx + 1 + '/3';
-    if (tab === 'quiz') {
+
+  function showCourseOverview() {
+    const ov = $('#courseOverview');
+    const les = $('#courseLesson');
+    if (ov) ov.hidden = false;
+    if (les) les.hidden = true;
+    renderCourseList();
+  }
+
+  function setCourseStep(n) {
+    n = String(n);
+    $$('#courseSteps .lstep').forEach((b) => {
+      const s = b.dataset.cstep;
+      b.classList.toggle('active', s === n);
+      if (parseInt(s, 10) < parseInt(n, 10)) b.classList.add('done');
+      else if (s !== n) b.classList.remove('done');
+    });
+    const s1 = $('#courseStep1');
+    const s2 = $('#courseStep2');
+    const s3 = $('#courseStep3');
+    const s4 = $('#courseStep4');
+    if (s1) s1.hidden = n !== '1';
+    if (s2) s2.hidden = n !== '2';
+    if (s3) s3.hidden = n !== '3';
+    if (s4) s4.hidden = n !== '4';
+    if (n === '2') setupPractice();
+    if (n === '3') {
       quizIndex = 0;
       quizScore = 0;
       renderQuizQ();
     }
+    if (n === '4') {
+      const total = currentLesson ? currentLesson.quiz.length : 0;
+      if ($('#courseCompleteTitle'))
+        $('#courseCompleteTitle').textContent = currentLesson ? currentLesson.title : 'Lezione';
+      if ($('#courseCompleteScore'))
+        $('#courseCompleteScore').textContent = total
+          ? 'Quiz: ' + quizScore + '/' + total + ' — tocca Completa per salvare.'
+          : 'Tocca Completa per salvare il progresso.';
+    }
+  }
+
+  let practiceIdx = 0;
+
+  function setupPractice() {
+    if (!currentLesson || !currentLesson.phrases.length) return;
+    practiceIdx = practiceIdx % currentLesson.phrases.length;
+    const p = currentLesson.phrases[practiceIdx];
+    if ($('#coursePracticeEn')) $('#coursePracticeEn').textContent = p;
+    if ($('#coursePracticePrompt'))
+      $('#coursePracticePrompt').textContent = 'Ripeti: “' + p + '”';
+    if ($('#coursePracticeIt')) $('#coursePracticeIt').textContent = '';
+    if ($('#coursePracticeResult')) $('#coursePracticeResult').textContent = '';
   }
 
   function openLesson(id) {
     const data = window.COURSE_A1;
+    if (!data) return;
     const lesson = data.lessons.find((l) => l.id === id);
     if (!lesson) return;
     currentLesson = lesson;
     quizIndex = 0;
     quizScore = 0;
-    $('#courseList').hidden = true;
+    practiceIdx = 0;
+
+    const ov = $('#courseOverview');
     const view = $('#courseLesson');
-    view.hidden = false;
-    $('#courseLessonTitle').textContent = lesson.title;
-    // words
-    $('#courseWords').innerHTML = lesson.words
-      .map(
-        (w) =>
-          '<div class="word-row"><strong>' +
-          escapeHtml(w.en) +
-          '</strong><span class="it">' +
-          escapeHtml(w.it) +
-          '</span></div>'
-      )
-      .join('');
-    // phrases
-    $('#coursePhrases').innerHTML = lesson.phrases
-      .map(
-        (p) =>
-          '<div class="phrase-row"><span>' +
-          escapeHtml(p) +
-          '</span><button type="button" class="ghost-btn" data-speak="' +
-          escapeHtml(p) +
-          '">🔊</button></div>'
-      )
-      .join('');
-    // quiz reset + step 1
-    renderQuizQ();
-    setCourseStep('words');
+    if (ov) ov.hidden = true;
+    if (view) {
+      view.hidden = false;
+      try {
+        view.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (_) {}
+    }
+
+    const idx = data.lessons.findIndex((l) => l.id === id);
+    if ($('#courseDayLabel')) $('#courseDayLabel').textContent = 'LEZIONE ' + (idx + 1);
+    if ($('#courseLessonTitle')) $('#courseLessonTitle').textContent = lesson.title;
+    if ($('#courseLessonDesc'))
+      $('#courseLessonDesc').textContent =
+        lesson.words.length +
+        ' parole · ' +
+        lesson.phrases.length +
+        ' frasi · quiz. Tocca per ascoltare.';
+
+    if ($('#courseWordChips')) {
+      $('#courseWordChips').innerHTML = lesson.words
+        .map(
+          (w) =>
+            '<button type="button" class="word-chip" data-en="' +
+            escapeHtml(w.en) +
+            '" data-it="' +
+            escapeHtml(w.it) +
+            '"><strong>' +
+            escapeHtml(w.en) +
+            '</strong><small>' +
+            escapeHtml(w.it) +
+            '</small></button>'
+        )
+        .join('');
+    }
+
+    if ($('#coursePhraseList')) {
+      $('#coursePhraseList').innerHTML = lesson.phrases
+        .map(
+          (p) =>
+            '<div class="phrase-card"><div><div class="en">' +
+            escapeHtml(p) +
+            '</div></div><button type="button" data-speak-en="' +
+            escapeHtml(p) +
+            '" aria-label="Ascolta">🔊</button></div>'
+        )
+        .join('');
+    }
+
+    setCourseStep('1');
   }
 
   function renderQuizQ() {
     const box = $('#courseQuiz');
-    if (!currentLesson) return;
+    if (!box || !currentLesson) return;
     if (quizIndex >= currentLesson.quiz.length) {
       const total = currentLesson.quiz.length;
-      const prog = loadCourseProgress();
-      prog.done[currentLesson.id] = true;
-      prog.quiz[currentLesson.id] = { score: quizScore, total };
-      saveCourseProgress(prog);
       box.innerHTML =
         '<div class="quiz-score">Punteggio: ' +
         quizScore +
         '/' +
         total +
-        '</div><p class="hint center">Lezione segnata come completata.</p><button type="button" class="primary-btn" id="quizBackList" style="width:100%">Torna alle lezioni</button>';
-      $('#quizBackList')?.addEventListener('click', renderCourseList);
-      updateHome();
+        '</div><p class="hint center">Ottimo. Passa a Completa per salvare.</p><button type="button" class="primary-btn" id="quizToComplete" style="width:100%">Vai a Completa →</button>';
+      $('#quizToComplete')?.addEventListener('click', () => setCourseStep('4'));
+      setTimeout(() => setCourseStep('4'), 600);
       return;
     }
     const item = currentLesson.quiz[quizIndex];
@@ -1558,7 +1620,11 @@
       item.options
         .map(
           (o, i) =>
-            '<button type="button" class="quiz-opt" data-qi="' + i + '">' + escapeHtml(o) + '</button>'
+            '<button type="button" class="quiz-opt" data-qi="' +
+            i +
+            '">' +
+            escapeHtml(o) +
+            '</button>'
         )
         .join('');
     $$('.quiz-opt', box).forEach((btn) => {
@@ -1578,7 +1644,6 @@
       });
     });
   }
-
 
   // ─── Wire events ─────────────────────────────────────────
   function init() {
@@ -1893,33 +1958,90 @@
       const btn = e.target.closest('[data-lesson]');
       if (btn) openLesson(btn.dataset.lesson);
     });
-    $('#courseBack')?.addEventListener('click', renderCourseList);
+    $('#courseBack')?.addEventListener('click', showCourseOverview);
     $('#courseUnits')?.addEventListener('click', (e) => {
       const b = e.target.closest('[data-unit]');
       if (!b) return;
       courseUnitFilter = b.dataset.unit;
       renderCourseList();
     });
-    $$('#courseSteps .cstep').forEach((b) =>
-      b.addEventListener('click', () => setCourseStep(b.dataset.ctab))
+    $$('#courseSteps .lstep').forEach((b) =>
+      b.addEventListener('click', () => setCourseStep(b.dataset.cstep))
     );
-    $('#courseNextStep')?.addEventListener('click', () => {
-      const order = ['words', 'phrases', 'quiz'];
-      const cur = $$('#courseSteps .cstep').find((x) => x.classList.contains('active'));
-      const i = order.indexOf(cur?.dataset.ctab || 'words');
-      setCourseStep(order[Math.min(order.length - 1, i + 1)]);
+    $('#courseToStep2')?.addEventListener('click', () => setCourseStep('2'));
+    $('#courseToStep3')?.addEventListener('click', () => setCourseStep('3'));
+    $('#courseWordChips')?.addEventListener('click', (e) => {
+      const chip = e.target.closest('.word-chip');
+      if (!chip) return;
+      playOxfordAudio(chip.dataset.en, chip.dataset.it || '');
     });
-    $('#coursePrevStep')?.addEventListener('click', () => {
-      const order = ['words', 'phrases', 'quiz'];
-      const cur = $$('#courseSteps .cstep').find((x) => x.classList.contains('active'));
-      const i = order.indexOf(cur?.dataset.ctab || 'words');
-      if (i <= 0) renderCourseList();
-      else setCourseStep(order[i - 1]);
+    $('#coursePhraseList')?.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-speak-en]');
+      if (btn) speak(btn.dataset.speakEn);
     });
-    $('#coursePhrases')?.addEventListener('click', (e) => {
-      const s = e.target.dataset.speak;
-      if (s) speak(s);
+    $('#coursePracticeListen')?.addEventListener('click', () => {
+      const t = $('#coursePracticeEn')?.textContent;
+      if (t && t !== '—') speak(t);
     });
+    $('#coursePracticeNext')?.addEventListener('click', () => {
+      if (!currentLesson) return;
+      practiceIdx = (practiceIdx + 1) % currentLesson.phrases.length;
+      setupPractice();
+    });
+    let courseRec = null;
+    $('#coursePracticeSpeak')?.addEventListener('click', () => {
+      const target = $('#coursePracticeEn')?.textContent || '';
+      const btn = $('#coursePracticeSpeak');
+      if (!target || target === '—') return;
+      if (btn.classList.contains('recording') && courseRec) {
+        courseRec.stop();
+        btn.classList.remove('recording');
+        return;
+      }
+      btn.classList.add('recording');
+      $('#coursePracticeResult').textContent = 'Ascolto…';
+      courseRec = startRecognition(
+        'en-US',
+        (t) => {
+          btn.classList.remove('recording');
+          const r = offlineEvaluate(target, t);
+          $('#coursePracticeResult').textContent =
+            (r.ok ? '✓ ' : '✗ ') + r.feedback + ' — Hai detto: “' + t + '”';
+        },
+        (err) => {
+          btn.classList.remove('recording');
+          $('#coursePracticeResult').textContent = err || 'Riprova';
+        }
+      );
+    });
+    function completeCurrentLesson() {
+      if (!currentLesson) return;
+      const prog = loadCourseProgress();
+      prog.done[currentLesson.id] = true;
+      prog.quiz[currentLesson.id] = {
+        score: quizScore,
+        total: currentLesson.quiz.length
+      };
+      saveCourseProgress(prog);
+      updateHome();
+      showCourseOverview();
+    }
+    $('#courseCompleteBtn')?.addEventListener('click', completeCurrentLesson);
+    $('#courseJumpComplete')?.addEventListener('click', () => setCourseStep('4'));
+    const listenAll = () => {
+      if (!currentLesson) return;
+      const items = [];
+      currentLesson.words.forEach((w) => {
+        items.push({ text: w.en, lang: 'en-US', pauseAfter: 300 });
+        items.push({ text: (w.it || '').split('/')[0].trim(), lang: 'it-IT', pauseAfter: 250 });
+      });
+      currentLesson.phrases.forEach((p) => {
+        items.push({ text: p, lang: 'en-US', pauseAfter: 500 });
+      });
+      speakSequence(items.filter((x) => x.text));
+    };
+    $('#courseListenAll')?.addEventListener('click', listenAll);
+    $('#courseListenAll2')?.addEventListener('click', listenAll);
 
     // Install PWA
     let deferredPrompt = null;

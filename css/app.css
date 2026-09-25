@@ -722,3 +722,47 @@ code {
 .oxford-actions .ghost-btn { width: 100%; }
 #oxfordWord { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
 #oxfordTrans { font-size: 18px; color: var(--teal); min-height: 1.4em; }
+
+#courseOverview[hidden], #courseLesson[hidden] { display: none !important; }
+.course-lesson { display: flex; flex-direction: column; gap: 12px; }
+.lesson-top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.lesson-top h2 { font-size: 22px; margin: 2px 0 4px; line-height: 1.2; }
+.lesson-steps {
+  display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px;
+}
+.lstep {
+  flex-shrink: 0; border: none; border-radius: 99px; padding: 8px 12px;
+  font-size: 12px; font-weight: 700; font-family: var(--font);
+  background: var(--surface-2); color: var(--muted); cursor: pointer;
+}
+.lstep.active { background: #0f766e; color: #fff; }
+.lstep.done { background: rgba(52,211,153,.18); color: var(--ok); }
+.lesson-h { font-size: 15px; margin: 14px 0 6px; }
+.word-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.word-chip {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 99px;
+  padding: 10px 14px; cursor: pointer; font-family: var(--font); text-align: center;
+  color: var(--text); min-width: 72px;
+}
+.word-chip strong { display: block; font-size: 14px; }
+.word-chip small { color: var(--teal); font-size: 11px; }
+.word-chip:active { transform: scale(.97); }
+.phrase-cards { display: flex; flex-direction: column; gap: 8px; }
+.phrase-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 14px; border-radius: 14px; background: rgba(251,243,219,.35);
+  border: 1px solid var(--line); text-align: left;
+}
+[data-theme="dark"] .phrase-card { background: rgba(56,189,248,.06); }
+.phrase-card .en { font-weight: 700; font-size: 15px; }
+.phrase-card .it { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.phrase-card button {
+  border: none; background: transparent; font-size: 18px; cursor: pointer; flex-shrink: 0;
+}
+.lesson-footer-actions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; padding-bottom: 8px;
+}
+.lesson-panel { animation: fadeIn .2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }

@@ -1,11 +1,10 @@
 {
-  "version": "16.8",
+  "version": "16.10",
   "date": "2026-09-25",
   "changes": [
-    "Oxford: legge automaticamente inglese + italiano a ogni parola",
-    "Poi aspetta: scegli + Vocabolario o Prossima (auto OFF di default)",
-    "Auto avanza lento opzionale (~6.5s dopo EN+IT)",
-    "Corso in alto in Home, card più grande e progresso",
-    "Flusso corso più chiaro"
+    "Corso: apertura lezione a schermo intero (niente lista sopra)",
+    "Flusso tipo riferimento: 1 Impara · 2 Ascolta · 3 Controlla · 4 Completa",
+    "Parole a chip con audio EN+IT, frasi con speaker",
+    "Prova a dirlo con microfono, quiz e completa lezione"
   ]
 }

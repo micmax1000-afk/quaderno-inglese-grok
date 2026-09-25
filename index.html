@@ -219,41 +219,88 @@
 
     <!-- COURSE A1 -->
     <section class="screen" data-screen="course">
-      <div class="screen-head">
-        <h2>Corso A1–A2</h2>
-        <span class="badge" id="courseProgressBadge">0/18</span>
-      </div>
-      <div class="card course-hero">
-        <div class="course-hero-top">
-          <div>
-            <span class="label">Studia offline, passo dopo passo</span>
-            <strong id="courseHeroTitle">18 lezioni</strong>
+      <!-- Lista lezioni -->
+      <div id="courseOverview">
+        <div class="screen-head">
+          <h2>Corso A1–A2</h2>
+          <span class="badge" id="courseProgressBadge">0/18</span>
+        </div>
+        <div class="card course-hero">
+          <div class="course-hero-top">
+            <div>
+              <span class="label">Studia offline, passo dopo passo</span>
+              <strong id="courseHeroTitle">18 lezioni</strong>
+            </div>
+            <div class="course-ring" id="courseRing"><span id="courseRingPct">0%</span></div>
           </div>
-          <div class="course-ring" id="courseRing"><span id="courseRingPct">0%</span></div>
+          <div class="course-progress-bar"><i id="courseProgressBar" style="width:0%"></i></div>
+          <p class="hint" id="courseHeroHint">Ogni lezione: Impara → Ascolta → Controlla → Completa</p>
+          <button type="button" class="primary-btn" id="courseContinue" style="width:100%;margin-top:10px">Inizia</button>
         </div>
-        <div class="course-progress-bar"><i id="courseProgressBar" style="width:0%"></i></div>
-        <p class="hint" id="courseHeroHint">Ogni lezione: Parole → Frasi → Quiz</p>
-        <button type="button" class="primary-btn" id="courseContinue" style="width:100%;margin-top:10px">Inizia</button>
+        <div class="course-units" id="courseUnits"></div>
+        <div id="courseList" class="course-list"></div>
       </div>
-      <div class="course-units" id="courseUnits"></div>
-      <div id="courseList" class="course-list"></div>
+
+      <!-- Vista lezione a schermo intero (sotto header app) -->
       <div id="courseLesson" class="course-lesson" hidden>
-        <div class="course-lesson-bar">
-          <button type="button" class="text-btn" id="courseBack">← Indietro</button>
-          <span class="badge" id="courseStepBadge">1/3</span>
+        <div class="lesson-top">
+          <div>
+            <span class="label" id="courseDayLabel">LEZIONE</span>
+            <h2 id="courseLessonTitle">—</h2>
+            <p class="hint" id="courseLessonDesc">Parole, frasi e quiz offline.</p>
+          </div>
+          <button type="button" class="ghost-btn" id="courseBack">Chiudi</button>
         </div>
-        <h3 id="courseLessonTitle"></h3>
-        <div class="course-steps" id="courseSteps">
-          <button type="button" class="cstep active" data-ctab="words"><span>1</span>Parole</button>
-          <button type="button" class="cstep" data-ctab="phrases"><span>2</span>Frasi</button>
-          <button type="button" class="cstep" data-ctab="quiz"><span>3</span>Quiz</button>
+        <div class="lesson-steps" id="courseSteps">
+          <button type="button" class="lstep active" data-cstep="1">1 Impara</button>
+          <button type="button" class="lstep" data-cstep="2">2 Ascolta</button>
+          <button type="button" class="lstep" data-cstep="3">3 Controlla</button>
+          <button type="button" class="lstep" data-cstep="4">4 Completa</button>
         </div>
-        <div id="courseWords" class="course-panel"></div>
-        <div id="coursePhrases" class="course-panel" hidden></div>
-        <div id="courseQuiz" class="course-panel" hidden></div>
-        <div class="course-nav-btns">
-          <button type="button" class="ghost-btn" id="coursePrevStep">Indietro</button>
-          <button type="button" class="primary-btn" id="courseNextStep">Avanti →</button>
+
+        <div id="courseStep1" class="lesson-panel">
+          <h4 class="lesson-h">Parole chiave</h4>
+          <p class="hint">Tocca una parola per ascoltarla (EN + IT).</p>
+          <div id="courseWordChips" class="word-chips"></div>
+          <h4 class="lesson-h">Frasi modello</h4>
+          <div id="coursePhraseList" class="phrase-cards"></div>
+          <button type="button" class="primary-btn" id="courseToStep2" style="width:100%;margin-top:12px">Continua: Ascolta →</button>
+        </div>
+
+        <div id="courseStep2" class="lesson-panel" hidden>
+          <div class="card soft">
+            <strong>🎧 Prova a dirlo</strong>
+            <p id="coursePracticePrompt">Ripeti la frase.</p>
+            <p class="sentence" id="coursePracticeEn">—</p>
+            <p class="trans" id="coursePracticeIt"></p>
+            <div class="btn-row" style="margin-top:10px">
+              <button type="button" class="ghost-btn" id="coursePracticeListen">🔊 Ascolta</button>
+              <button type="button" class="primary-btn" id="coursePracticeSpeak">🎤 Parla</button>
+            </div>
+            <p class="hint" id="coursePracticeResult"></p>
+            <button type="button" class="ghost-btn" id="coursePracticeNext" style="width:100%;margin-top:8px">Altra frase</button>
+          </div>
+          <button type="button" class="primary-btn" id="courseToStep3" style="width:100%;margin-top:12px">Continua: Controlla →</button>
+        </div>
+
+        <div id="courseStep3" class="lesson-panel" hidden>
+          <h4 class="lesson-h">3 · Controllo rapido</h4>
+          <div id="courseQuiz" class="course-panel"></div>
+        </div>
+
+        <div id="courseStep4" class="lesson-panel" hidden>
+          <div class="card center-card">
+            <p class="label">Lezione</p>
+            <p class="sentence" id="courseCompleteTitle">Completata</p>
+            <p class="hint" id="courseCompleteScore"></p>
+            <button type="button" class="primary-btn" id="courseCompleteBtn" style="width:100%">✓ Completa lezione</button>
+            <button type="button" class="ghost-btn" id="courseListenAll" style="width:100%;margin-top:8px">🔊 Ascolta tutto</button>
+          </div>
+        </div>
+
+        <div class="lesson-footer-actions">
+          <button type="button" class="ghost-btn" id="courseListenAll2">🔊 Ascolta tutto</button>
+          <button type="button" class="primary-btn" id="courseJumpComplete">✓ Completa</button>
         </div>
       </div>
     </section>
