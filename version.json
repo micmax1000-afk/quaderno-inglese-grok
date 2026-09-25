@@ -1,8 +1,10 @@
 {
-  "version": "16.17",
+  "version": "16.19",
   "date": "2026-09-25",
   "changes": [
-    "Conversazione: traduzione IT sotto messaggi AI (anche dialoghi offline)",
-    "Scrivi: feedback leggibile anche con tema chiaro"
+    "Più dialoghi viaggio (taxi, stazione, hotel, farmacia, ristorante, museo…)",
+    "Progresso dialoghi (✓ sui completati) — solo localStorage, zero lag",
+    "Valutazione offline leggera delle risposte nel dialogo",
+    "Audio dialogo en-GB leggermente più chiaro"
   ]
 }

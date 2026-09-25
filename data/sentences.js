@@ -1051,3 +1051,115 @@ window.DIALOGUE_IT = {
   "What is driving the growth?": "Cosa sta guidando la crescita?",
   "Mainly the new product line in Europe.": "Soprattutto la nuova linea di prodotti in Europa."
 };
+
+/* Dialoghi viaggio extra V16.19 */
+(function () {
+  const P = window.DIALOGUE_PACKS;
+  if (!P) return;
+  const add = (level, pack) => {
+    if (!P[level]) P[level] = [];
+    if (!P[level].some((x) => x.title === pack.title)) P[level].push(pack);
+  };
+
+  add('A1', {
+    title: 'In taxi',
+    lines: [
+      { role: 'ai', text: 'Where would you like to go?', it: 'Dove vuole andare?' },
+      { role: 'user_hint', text: 'To the train station, please.', it: 'Alla stazione dei treni, per favore.' },
+      { role: 'ai', text: 'Sure. Shall I take the motorway?', it: 'Certo. Prendo l\'autostrada?' },
+      { role: 'user_hint', text: 'Yes, please. How much will it cost?', it: 'Sì, per favore. Quanto costerà?' }
+    ]
+  });
+  add('A1', {
+    title: 'Alla stazione',
+    lines: [
+      { role: 'ai', text: 'Good morning. Where are you travelling to?', it: 'Buongiorno. Dove va?' },
+      { role: 'user_hint', text: 'A return ticket to Rome, please.', it: 'Un biglietto di andata e ritorno per Roma, per favore.' },
+      { role: 'ai', text: 'The next train leaves at ten fifteen from platform four.', it: 'Il prossimo treno parte alle dieci e quindici dal binario quattro.' },
+      { role: 'user_hint', text: 'Thank you. Do I need to reserve a seat?', it: 'Grazie. Devo prenotare un posto?' }
+    ]
+  });
+  add('A1', {
+    title: 'Al bar',
+    lines: [
+      { role: 'ai', text: 'Hi! What can I get you?', it: 'Ciao! Cosa le porto?' },
+      { role: 'user_hint', text: 'A cappuccino to go, please.', it: 'Un cappuccino da asporto, per favore.' },
+      { role: 'ai', text: 'Anything else?', it: 'Altro?' },
+      { role: 'user_hint', text: 'No, that is all. How much is it?', it: 'No, è tutto. Quanto costa?' }
+    ]
+  });
+  add('A2', {
+    title: 'Problema in hotel',
+    lines: [
+      { role: 'ai', text: 'Reception, how can I help you?', it: 'Reception, come posso aiutarla?' },
+      { role: 'user_hint', text: 'The air conditioning in my room is not working.', it: 'Il condizionatore in camera non funziona.' },
+      { role: 'ai', text: 'I am sorry about that. Would you like us to send a technician?', it: 'Mi dispiace. Vuole che mandiamo un tecnico?' },
+      { role: 'user_hint', text: 'Could I change rooms instead, please?', it: 'Potrei invece cambiare camera, per favore?' }
+    ]
+  });
+  add('A2', {
+    title: 'In farmacia',
+    lines: [
+      { role: 'ai', text: 'Good afternoon. What do you need?', it: 'Buon pomeriggio. Di cosa ha bisogno?' },
+      { role: 'user_hint', text: 'I need something for a sore throat.', it: 'Mi serve qualcosa per il mal di gola.' },
+      { role: 'ai', text: 'How long have you had this?', it: 'Da quanto tempo ce l\'ha?' },
+      { role: 'user_hint', text: 'For two days. Do I need a prescription?', it: 'Da due giorni. Serve la ricetta?' }
+    ]
+  });
+  add('A2', {
+    title: 'Al ristorante',
+    lines: [
+      { role: 'ai', text: 'Are you ready to order?', it: 'È pronto per ordinare?' },
+      { role: 'user_hint', text: 'Yes. I would like the pasta, please.', it: 'Sì. Vorrei la pasta, per favore.' },
+      { role: 'ai', text: 'Would you like something to drink?', it: 'Desidera qualcosa da bere?' },
+      { role: 'user_hint', text: 'A bottle of water, please. And the bill later.', it: 'Una bottiglia d\'acqua, per favore. E il conto dopo.' }
+    ]
+  });
+  add('A2', {
+    title: 'Chiedere la strada',
+    lines: [
+      { role: 'ai', text: 'You look lost. Can I help?', it: 'Sembra perso. Posso aiutarla?' },
+      { role: 'user_hint', text: 'Yes. How do I get to the museum?', it: 'Sì. Come arrivo al museo?' },
+      { role: 'ai', text: 'Go straight for two blocks, then turn right.', it: 'Vada dritto per due isolati, poi giri a destra.' },
+      { role: 'user_hint', text: 'Is it far on foot?', it: 'È lontano a piedi?' }
+    ]
+  });
+  add('B1', {
+    title: 'Volo in ritardo',
+    lines: [
+      { role: 'ai', text: 'I am afraid your flight has been delayed by two hours.', it: 'Temo che il suo volo sia in ritardo di due ore.' },
+      { role: 'user_hint', text: 'That is frustrating. Is there an earlier alternative?', it: 'È frustrante. C\'è un\'alternativa prima?' },
+      { role: 'ai', text: 'I can put you on the waitlist for the next flight.', it: 'Posso metterla in lista d\'attesa per il prossimo volo.' },
+      { role: 'user_hint', text: 'Please do. Could I also have a meal voucher?', it: 'Sì, grazie. Potrei avere anche un buono pasto?' }
+    ]
+  });
+  add('B1', {
+    title: 'Affittare una bici',
+    lines: [
+      { role: 'ai', text: 'Would you like to rent a bike for the day?', it: 'Vorrebbe noleggiare una bici per la giornata?' },
+      { role: 'user_hint', text: 'Yes. How much does it cost?', it: 'Sì. Quanto costa?' },
+      { role: 'ai', text: 'Fifteen euros, including a lock and a helmet.', it: 'Quindici euro, lucchetto e casco inclusi.' },
+      { role: 'user_hint', text: 'Great. Do I need to leave a deposit?', it: 'Ottimo. Devo lasciare un deposito?' }
+    ]
+  });
+  add('B1', {
+    title: 'Al museo',
+    lines: [
+      { role: 'ai', text: 'Tickets are twelve euros. Do you have a student card?', it: 'I biglietti sono dodici euro. Ha la tessera studente?' },
+      { role: 'user_hint', text: 'Yes, here it is. Is photography allowed?', it: 'Sì, ecco. Si possono fare foto?' },
+      { role: 'ai', text: 'Yes, without flash. Audio guides are available at the desk.', it: 'Sì, senza flash. Le audioguide sono al bancone.' },
+      { role: 'user_hint', text: 'Thank you. Where does the exhibition start?', it: 'Grazie. Dove inizia la mostra?' }
+    ]
+  });
+
+  // Merge IT into global map
+  const map = (window.DIALOGUE_IT = window.DIALOGUE_IT || {});
+  for (const level of Object.keys(P)) {
+    for (const d of P[level] || []) {
+      for (const L of d.lines || []) {
+        if (L.text && L.it) map[L.text] = L.it;
+      }
+    }
+  }
+})();
+

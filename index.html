@@ -89,8 +89,13 @@
         <button type="button" class="text-btn" id="clearTalk">Pulisci</button>
       </div>
       <div class="chip-row" id="dialogueChips">
-        <button type="button" id="dlgStart" class="chip-primary">🎬 Dialogo offline</button>
+        <button type="button" id="dlgStart" class="chip-primary">🎬 Scegli dialogo</button>
+        <button type="button" id="dlgRandom" class="chip">🎲 A caso</button>
         <button type="button" id="dlgNextHint">💡 Suggerimento</button>
+      </div>
+      <div class="dlg-picker" id="dlgPicker" hidden>
+        <p class="dlg-picker-title">Scegli una conversazione offline</p>
+        <div class="dlg-picker-list" id="dlgPickerList"></div>
       </div>
       <div class="chat-thread" id="talkThread">
         <div class="empty-chat" id="talkEmpty">

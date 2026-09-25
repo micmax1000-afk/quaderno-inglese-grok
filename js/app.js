@@ -8,7 +8,8 @@
     vocab: 'quaderno_v16_vocab',
     theme: 'quaderno_v16_theme',
     oxfordCache: 'quaderno_v16_oxford_cache',
-    stats: 'quaderno_v16_stats'
+    stats: 'quaderno_v16_stats',
+    dlgProgress: 'quaderno_v16_dlg_progress'
   };
 
   const FALLBACK_MODELS = [
@@ -801,19 +802,147 @@
   }
 
 
+
+  function loadDlgProgress() {
+    return loadJSON(STORAGE.dlgProgress, {});
+  }
+  function saveDlgProgress(p) {
+    saveJSON(STORAGE.dlgProgress, p);
+  }
+  function dlgKey(pack) {
+    return String((pack && pack.title) || '').trim().toLowerCase();
+  }
+  function markDialogueDone(pack) {
+    if (!pack) return;
+    const p = loadDlgProgress();
+    p[dlgKey(pack)] = { done: true, at: Date.now() };
+    saveDlgProgress(p);
+  }
+  function isDialogueDone(pack) {
+    return !!(loadDlgProgress()[dlgKey(pack)] || {}).done;
+  }
+
+  /** Valutazione offline leggera (zero Gemini): confronto con lo hint */
+  function offlineScoreUtterance(spoken, expected) {
+    const a = normalizeSpeech(spoken);
+    const b = normalizeSpeech(expected);
+    if (!a || !b) return { pct: 0, ok: false };
+    if (a === b) return { pct: 100, ok: true };
+    const wa = a.split(' ').filter(Boolean);
+    const wb = b.split(' ').filter(Boolean);
+    if (!wb.length) return { pct: 0, ok: false };
+    let hit = 0;
+    wb.forEach((w) => {
+      if (wa.includes(w) || wa.some((x) => softMatch(x, w))) hit++;
+    });
+    const pct = Math.round((hit / wb.length) * 100);
+    return { pct, ok: pct >= 55 };
+  }
+
+  function showDialogueFeedback(spoken, expected) {
+    const thread = $('#talkThread');
+    if (!thread) return;
+    const { pct, ok } = offlineScoreUtterance(spoken, expected);
+    const box = document.createElement('div');
+    box.className = 'dlg-feedback ' + (ok ? 'ok' : 'mid');
+    const it = (window.DIALOGUE_IT || {})[expected] || '';
+    box.innerHTML =
+      '<div class="dlg-fb-score">' +
+      (ok ? '✓' : '·') +
+      ' Somiglianza ~' +
+      pct +
+      '%</div>' +
+      '<div class="dlg-fb-exp"><span class="k">Modello</span> ' +
+      escapeHtml(expected) +
+      '</div>' +
+      (it ? '<div class="dlg-fb-it">' + escapeHtml(it) + '</div>' : '') +
+      '<div class="dlg-fb-hint">Non deve essere identico: l\'importante è farsi capire.</div>';
+    thread.appendChild(box);
+    thread.scrollTop = thread.scrollHeight;
+  }
+
+  function allDialoguePacks() {
+    const packs = window.DIALOGUE_PACKS || {};
+    const out = [];
+    for (const level of Object.keys(packs)) {
+      (packs[level] || []).forEach((p, i) => {
+        out.push({ level, index: i, title: p.title, pack: p });
+      });
+    }
+    return out;
+  }
+
   function pickDialoguePack() {
     const packs = window.DIALOGUE_PACKS || {};
     const level = getLevel();
     let list = packs[level] || packs.A1 || [];
-    if (!list.length) {
-      list = Object.values(packs).flat();
-    }
+    if (!list.length) list = Object.values(packs).flat();
     if (!list.length) return null;
     return list[Math.floor(Math.random() * list.length)];
   }
 
-  function startOfflineDialogue() {
-    const pack = pickDialoguePack();
+  function toggleDialoguePicker() {
+    const box = $('#dlgPicker');
+    if (!box) return;
+    if (!box.hidden) {
+      box.hidden = true;
+      return;
+    }
+    renderDialoguePicker();
+    box.hidden = false;
+  }
+
+  function renderDialoguePicker() {
+    const list = $('#dlgPickerList');
+    if (!list) return;
+    const items = allDialoguePacks();
+    if (!items.length) {
+      list.innerHTML = '<p class="hint">Nessun dialogo disponibile.</p>';
+      return;
+    }
+    const byLevel = {};
+    items.forEach((it) => {
+      if (!byLevel[it.level]) byLevel[it.level] = [];
+      byLevel[it.level].push(it);
+    });
+    list.innerHTML = Object.keys(byLevel)
+      .sort()
+      .map((lv) => {
+        const rows = byLevel[lv]
+          .map(
+            (it) =>
+              '<button type="button" class="dlg-pick-btn' +
+              (isDialogueDone(it.pack) ? ' done' : '') +
+              '" data-level="' +
+              escapeHtml(it.level) +
+              '" data-index="' +
+              it.index +
+              '"><span class="dlg-lv">' +
+              escapeHtml(lv) +
+              '</span><span class="dlg-title">' +
+              escapeHtml(it.title) +
+              '</span>' +
+              (isDialogueDone(it.pack) ? '<span class="dlg-done">✓</span>' : '') +
+              '</button>'
+          )
+          .join('');
+        return '<div class="dlg-group"><div class="dlg-group-label">' + escapeHtml(lv) + '</div>' + rows + '</div>';
+      })
+      .join('');
+    list.querySelectorAll('.dlg-pick-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const level = btn.dataset.level;
+        const index = parseInt(btn.dataset.index, 10);
+        const pack = (window.DIALOGUE_PACKS[level] || [])[index];
+        if (pack) startOfflineDialogue(pack);
+        const box = $('#dlgPicker');
+        if (box) box.hidden = true;
+      });
+    });
+  }
+
+  function startOfflineDialogue(pack) {
+    if (!pack) pack = pickDialoguePack();
     if (!pack) {
       setTalkStatus('Nessun dialogo offline disponibile.', true);
       return;
@@ -821,13 +950,14 @@
     dialogueState = { pack, lineIndex: 0 };
     const empty = $('#talkEmpty');
     if (empty) empty.remove();
-    // show title
     const thread = $('#talkThread');
     const title = document.createElement('div');
     title.className = 'dlg-hint';
-    title.innerHTML = '<b>Dialogo offline:</b> ' + escapeHtml(pack.title) + ' — rispondi con le tue parole o usa 💡 Suggerimento';
+    title.innerHTML =
+      '<b>Dialogo offline:</b> ' +
+      escapeHtml(pack.title) +
+      ' — rispondi con le tue parole o usa 💡 Suggerimento';
     thread.appendChild(title);
-    // play first AI lines until a user_hint
     advanceDialogueAI();
   }
 
@@ -850,7 +980,10 @@
       if (line.role === 'ai') {
         addTalkBubble('ai', line.text, false, dialogueIt(line));
         talkHistory.push({ role: 'model', text: line.text });
-        if (autoSpeak()) speak(line.text);
+        if (autoSpeak()) {
+          // Voce dialogo: inglese chiaro, un filo più lento
+          speak(line.text, 'en-GB');
+        }
       } else if (line.role === 'user_hint') {
         // stop and wait for user; store current hint
         dialogueState.currentHint = line.text;
@@ -863,8 +996,10 @@
     done.className = 'all-ok';
     done.textContent = '✓ Dialogo completato — bravo!';
     thread.appendChild(done);
+    try { markDialogueDone(pack); } catch (_) {}
     dialogueState = null;
     setTalkStatus('');
+    touchStudy(3, 'talk');
   }
 
   function showDialogueHint() {
@@ -903,7 +1038,11 @@
     // Dialogo offline: non chiamare Gemini, avanza lo script
     if (dialogueState) {
       talkHistory.push({ role: 'user', text });
+      const expected = dialogueState.currentHint || '';
       dialogueState.currentHint = null;
+      if (expected) {
+        try { showDialogueFeedback(text, expected); } catch (_) {}
+      }
       setTalkStatus('⚡ Dialogo offline');
       sendBtn.disabled = false;
       input.disabled = false;
@@ -2017,7 +2156,8 @@
         '<div class="empty-chat" id="talkEmpty">Scrivi o detta una frase in inglese per iniziare.</div>';
       setTalkStatus('');
     });
-    $('#dlgStart')?.addEventListener('click', startOfflineDialogue);
+    $('#dlgStart')?.addEventListener('click', () => toggleDialoguePicker());
+    $('#dlgRandom')?.addEventListener('click', () => startOfflineDialogue());
     $('#dlgNextHint')?.addEventListener('click', showDialogueHint);
     let talkRec = null;
     $('#talkMic').addEventListener('click', () => {

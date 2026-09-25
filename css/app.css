@@ -937,3 +937,74 @@ code {
   color: #0f172a;
   border: 1px solid rgba(15, 23, 42, 0.08);
 }
+
+/* Dialogue picker */
+.dlg-picker {
+  margin: 0 0 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--surface, #1e293b);
+  border: 1px solid var(--line, rgba(148,163,184,.2));
+}
+.dlg-picker-title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.dlg-group { margin-bottom: 10px; }
+.dlg-group-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.dlg-pick-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line, rgba(148,163,184,.2));
+  background: var(--bg-2, #111827);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.dlg-pick-btn:hover, .dlg-pick-btn:active {
+  border-color: var(--accent);
+}
+.dlg-lv {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 28px;
+}
+.dlg-title { flex: 1; font-size: 14px; }
+[data-theme="light"] .dlg-picker { background: #fff; }
+[data-theme="light"] .dlg-pick-btn { background: #f8fafc; }
+
+.dlg-pick-btn.done { border-color: color-mix(in srgb, var(--ok, #059669) 45%, transparent); }
+.dlg-done { color: var(--ok, #059669); font-weight: 700; margin-left: auto; }
+.dlg-feedback {
+  margin: 6px 12px 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+.dlg-feedback.ok { border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+.dlg-feedback.mid { border-color: color-mix(in srgb, var(--warn, #d97706) 40%, transparent); }
+.dlg-fb-score { font-weight: 700; margin-bottom: 4px; }
+.dlg-fb-exp .k { color: var(--muted); font-size: 11px; text-transform: uppercase; margin-right: 6px; }
+.dlg-fb-it { color: var(--teal, #0d9488); margin-top: 4px; }
+.dlg-fb-hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
+[data-theme="light"] .dlg-feedback { background: #fff; }
