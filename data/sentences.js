@@ -1163,3 +1163,248 @@ window.DIALOGUE_IT = {
   }
 })();
 
+
+/* V16.20 — più dialoghi + più frasi ascolto */
+(function () {
+  const P = window.DIALOGUE_PACKS;
+  if (!P) return;
+  const add = (level, pack) => {
+    if (!P[level]) P[level] = [];
+    if (!P[level].some((x) => x.title === pack.title)) P[level].push(pack);
+  };
+
+  // —— A1 quotidianità ——
+  add('A1', { title: 'Al telefono', lines: [
+    { role: 'ai', text: 'Hello?', it: 'Pronto?' },
+    { role: 'user_hint', text: 'Hi, is Mark there?', it: 'Ciao, c\'è Mark?' },
+    { role: 'ai', text: 'Sorry, he is not here. Can I take a message?', it: 'Spiacente, non c\'è. Posso prendere un messaggio?' },
+    { role: 'user_hint', text: 'Yes. Please ask him to call me back.', it: 'Sì. Gli chieda di richiamarmi, per favore.' }
+  ]});
+  add('A1', { title: 'Al parco', lines: [
+    { role: 'ai', text: 'Nice weather today!', it: 'Bel tempo oggi!' },
+    { role: 'user_hint', text: 'Yes, it is sunny and warm.', it: 'Sì, c\'è il sole e fa caldo.' },
+    { role: 'ai', text: 'Do you come here often?', it: 'Vieni spesso qui?' },
+    { role: 'user_hint', text: 'Yes, I walk here every weekend.', it: 'Sì, cammino qui ogni fine settimana.' }
+  ]});
+  add('A1', { title: 'Comprare un biglietto bus', lines: [
+    { role: 'ai', text: 'A single or a return?', it: 'Andata o andata e ritorno?' },
+    { role: 'user_hint', text: 'A single ticket, please.', it: 'Un biglietto di sola andata, per favore.' },
+    { role: 'ai', text: 'That is two euros fifty.', it: 'Sono due euro e cinquanta.' },
+    { role: 'user_hint', text: 'Here you are. Thank you.', it: 'Ecco. Grazie.' }
+  ]});
+  add('A1', { title: 'In classe', lines: [
+    { role: 'ai', text: 'Open your books to page ten.', it: 'Aprite i libri a pagina dieci.' },
+    { role: 'user_hint', text: 'Sorry, can you repeat that, please?', it: 'Scusi, può ripetere, per favore?' },
+    { role: 'ai', text: 'Of course. Page ten.', it: 'Certo. Pagina dieci.' },
+    { role: 'user_hint', text: 'Thank you. I understand now.', it: 'Grazie. Ora ho capito.' }
+  ]});
+
+  // —— A2 viaggio / quotidiano ——
+  add('A2', { title: 'In banca', lines: [
+    { role: 'ai', text: 'How can I help you today?', it: 'Come posso aiutarla oggi?' },
+    { role: 'user_hint', text: 'I would like to change some money.', it: 'Vorrei cambiare dei soldi.' },
+    { role: 'ai', text: 'Certainly. Do you have your passport?', it: 'Certo. Ha il passaporto?' },
+    { role: 'user_hint', text: 'Yes, here it is. I need euros, please.', it: 'Sì, ecco. Mi servono euro, per favore.' }
+  ]});
+  add('A2', { title: 'Dal parrucchiere', lines: [
+    { role: 'ai', text: 'What would you like today?', it: 'Cosa desidera oggi?' },
+    { role: 'user_hint', text: 'Just a trim, please. Not too short.', it: 'Solo un ritocco, per favore. Non troppo corto.' },
+    { role: 'ai', text: 'Would you like a wash as well?', it: 'Vuole anche lo shampoo?' },
+    { role: 'user_hint', text: 'Yes, please. And dry it, thank you.', it: 'Sì, per favore. E asciugarlo, grazie.' }
+  ]});
+  add('A2', { title: 'Affittare una macchina', lines: [
+    { role: 'ai', text: 'For how many days do you need the car?', it: 'Per quanti giorni le serve l\'auto?' },
+    { role: 'user_hint', text: 'Three days, from Friday to Sunday.', it: 'Tre giorni, da venerdì a domenica.' },
+    { role: 'ai', text: 'Do you want full insurance?', it: 'Vuole l\'assicurazione completa?' },
+    { role: 'user_hint', text: 'Yes. Is petrol included?', it: 'Sì. La benzina è inclusa?' }
+  ]});
+  add('A2', { title: 'In post office', lines: [
+    { role: 'ai', text: 'Next, please. How can I help?', it: 'Prego, il prossimo. Come posso aiutarla?' },
+    { role: 'user_hint', text: 'I need to send this package to Italy.', it: 'Devo spedire questo pacco in Italia.' },
+    { role: 'ai', text: 'By air or by surface mail?', it: 'Via aerea o ordinaria?' },
+    { role: 'user_hint', text: 'By air, please. How long will it take?', it: 'Via aerea, per favore. Quanto ci vorrà?' }
+  ]});
+  add('A2', { title: 'Al cinema', lines: [
+    { role: 'ai', text: 'Two tickets for the eight o\'clock show?', it: 'Due biglietti per lo spettacolo delle otto?' },
+    { role: 'user_hint', text: 'Yes, please. In the middle if possible.', it: 'Sì, per favore. Al centro se possibile.' },
+    { role: 'ai', text: 'Here you are. Enjoy the film!', it: 'Ecco a lei. Buona visione!' },
+    { role: 'user_hint', text: 'Thank you. Where is the entrance?', it: 'Grazie. Dov\'è l\'ingresso?' }
+  ]});
+
+  // —— B1 lavoro / viaggio ——
+  add('B1', { title: 'Prenotare un hotel al telefono', lines: [
+    { role: 'ai', text: 'Grand Hotel, how may I help you?', it: 'Grand Hotel, come posso aiutarla?' },
+    { role: 'user_hint', text: 'I would like to book a double room for two nights.', it: 'Vorrei prenotare una camera doppia per due notti.' },
+    { role: 'ai', text: 'From which date, please?', it: 'Da quale data, per favore?' },
+    { role: 'user_hint', text: 'From the twelfth of June. Is breakfast included?', it: 'Dal dodici giugno. La colazione è inclusa?' }
+  ]});
+  add('B1', { title: 'Reclamo in negozio', lines: [
+    { role: 'ai', text: 'Is there a problem with your purchase?', it: 'C\'è un problema con il suo acquisto?' },
+    { role: 'user_hint', text: 'Yes. This shirt has a hole. I would like a refund.', it: 'Sì. Questa camicia ha un buco. Vorrei un rimborso.' },
+    { role: 'ai', text: 'Do you have the receipt?', it: 'Ha lo scontrino?' },
+    { role: 'user_hint', text: 'Yes, here it is. Can I exchange it instead?', it: 'Sì, ecco. Posso cambiarla invece?' }
+  ]});
+  add('B1', { title: 'Alla reception ufficio', lines: [
+    { role: 'ai', text: 'Good morning. Do you have an appointment?', it: 'Buongiorno. Ha un appuntamento?' },
+    { role: 'user_hint', text: 'Yes, with Mr Brown at ten o\'clock.', it: 'Sì, con il signor Brown alle dieci.' },
+    { role: 'ai', text: 'Please take a seat. I will let him know.', it: 'Si accomodi. Glielo comunico.' },
+    { role: 'user_hint', text: 'Thank you. Could I have the Wi-Fi password?', it: 'Grazie. Potrei avere la password del Wi-Fi?' }
+  ]});
+  add('B1', { title: 'Ordine al ristorante (allergie)', lines: [
+    { role: 'ai', text: 'Are there any allergies we should know about?', it: 'Ci sono allergie di cui dovremmo sapere?' },
+    { role: 'user_hint', text: 'Yes, I am allergic to shellfish.', it: 'Sì, sono allergico ai crostacei.' },
+    { role: 'ai', text: 'Understood. I will inform the kitchen.', it: 'Capito. Informerò la cucina.' },
+    { role: 'user_hint', text: 'Thank you. What do you recommend instead?', it: 'Grazie. Cosa mi consiglia al posto?' }
+  ]});
+  add('B1', { title: 'Chiedere informazioni in stazione', lines: [
+    { role: 'ai', text: 'The ten fifteen train is cancelled.', it: 'Il treno delle dieci e quindici è cancellato.' },
+    { role: 'user_hint', text: 'Oh no. When is the next one?', it: 'Oh no. Quando è il prossimo?' },
+    { role: 'ai', text: 'At eleven thirty from platform two.', it: 'Alle undici e trenta dal binario due.' },
+    { role: 'user_hint', text: 'Do I need a new ticket?', it: 'Mi serve un nuovo biglietto?' }
+  ]});
+
+  // —— B2 ——
+  add('B2', { title: 'Negoziare una scadenza', lines: [
+    { role: 'ai', text: 'We really need the report by Friday.', it: 'Ci serve davvero il report entro venerdì.' },
+    { role: 'user_hint', text: 'That is tight. Could we extend it to Monday?', it: 'È stretto. Potremmo estenderlo a lunedì?' },
+    { role: 'ai', text: 'Monday morning at the latest.', it: 'Lunedì mattina al più tardi.' },
+    { role: 'user_hint', text: 'Agreed. I will send a draft on Sunday evening.', it: 'D\'accordo. Manderò una bozza domenica sera.' }
+  ]});
+  add('B2', { title: 'Feedback su un collega', lines: [
+    { role: 'ai', text: 'How did the collaboration with Sara go?', it: 'Come è andata la collaborazione con Sara?' },
+    { role: 'user_hint', text: 'Overall well. She is reliable, though sometimes late.', it: 'Nel complesso bene. È affidabile, anche se a volte in ritardo.' },
+    { role: 'ai', text: 'Would you work with her again?', it: 'Lavoreresti di nuovo con lei?' },
+    { role: 'user_hint', text: 'Yes, provided we agree deadlines in advance.', it: 'Sì, a patto di concordare le scadenze in anticipo.' }
+  ]});
+  add('B2', { title: 'Prenotare un volo (problemi)', lines: [
+    { role: 'ai', text: 'There are no seats left in economy for that date.', it: 'Non ci sono posti in economy per quella data.' },
+    { role: 'user_hint', text: 'Is there anything on the following day?', it: 'C\'è qualcosa il giorno dopo?' },
+    { role: 'ai', text: 'Yes, but only business class or a later flight.', it: 'Sì, ma solo business o un volo più tardi.' },
+    { role: 'user_hint', text: 'I will take the later economy flight, please.', it: 'Prendo il volo economy più tardi, per favore.' }
+  ]});
+
+  // Merge IT map
+  const map = (window.DIALOGUE_IT = window.DIALOGUE_IT || {});
+  for (const level of Object.keys(P)) {
+    for (const d of P[level] || []) {
+      for (const L of d.lines || []) {
+        if (L.text && L.it) map[L.text] = L.it;
+      }
+    }
+  }
+})();
+
+/* Frasi ascolto extra V16.20 — +4/tema + 2 nuovi temi */
+(function () {
+  const packs = window.LISTEN_PACKS || (window.LISTEN_PACKS = []);
+  function ensurePack(id, title, items) {
+    let p = packs.find((x) => x.id === id);
+    if (!p) {
+      p = { id: id, title: title, items: [] };
+      packs.push(p);
+    }
+    if (!p.items) p.items = [];
+    for (const item of items) {
+      if (!p.items.some((x) => x.en === item.en)) p.items.push(item);
+    }
+  }
+
+  ensurePack('airport', 'Aeroporto', [
+    { en: 'Where can I find a trolley?', it: 'Dove posso trovare un carrello?' },
+    { en: 'Is there a free shuttle to the terminal?', it: 'C\'è una navetta gratuita per il terminal?' },
+    { en: 'My suitcase is missing.', it: 'Manca la mia valigia.' },
+    { en: 'Can I take this liquid on board?', it: 'Posso portare questo liquido a bordo?' }
+  ]);
+  ensurePack('hotel', 'Hotel', [
+    { en: 'What time is check-in?', it: 'A che ora è il check-in?' },
+    { en: 'Is there a safe in the room?', it: 'C\'è una cassaforte in camera?' },
+    { en: 'Could you call a taxi for me?', it: 'Potrebbe chiamarmi un taxi?' },
+    { en: 'The room is too noisy.', it: 'La camera è troppo rumorosa.' }
+  ]);
+  ensurePack('restaurant', 'Ristorante', [
+    { en: 'Is the tip included?', it: 'La mancia è inclusa?' },
+    { en: 'Can we have a table outside?', it: 'Possiamo avere un tavolo fuori?' },
+    { en: 'I would like the same again, please.', it: 'Vorrei lo stesso ancora, per favore.' },
+    { en: 'This is not what I ordered.', it: 'Questo non è quello che ho ordinato.' }
+  ]);
+  ensurePack('directions', 'Indicazioni', [
+    { en: 'Is it within walking distance?', it: 'Si può raggiungere a piedi?' },
+    { en: 'Which bus goes to the centre?', it: 'Quale autobus va in centro?' },
+    { en: 'Am I on the right road for the station?', it: 'Sono sulla strada giusta per la stazione?' },
+    { en: 'Turn left at the traffic lights.', it: 'Giri a sinistra al semaforo.' }
+  ]);
+  ensurePack('shopping', 'Shopping', [
+    { en: 'Do you gift-wrap?', it: 'Fate il pacchetto regalo?' },
+    { en: 'Is this the final price?', it: 'Questo è il prezzo finale?' },
+    { en: 'I am just browsing, thank you.', it: 'Sto solo dando un\'occhiata, grazie.' },
+    { en: 'Can you hold this for me until tomorrow?', it: 'Può tenermelo fino a domani?' }
+  ]);
+  ensurePack('emergency', 'Aiuto / emergenza', [
+    { en: 'I have lost my wallet.', it: 'Ho perso il portafoglio.' },
+    { en: 'Where is the nearest police station?', it: 'Dov\'è il commissariato più vicino?' },
+    { en: 'I need an ambulance.', it: 'Mi serve un\'ambulanza.' },
+    { en: 'Can you call someone for me?', it: 'Può chiamare qualcuno per me?' }
+  ]);
+  ensurePack('taxi', 'Taxi', [
+    { en: 'Do you take credit cards?', it: 'Accetta le carte di credito?' },
+    { en: 'Please use the meter.', it: 'Usi il tassametro, per favore.' },
+    { en: 'This is the wrong address.', it: 'Questo è l\'indirizzo sbagliato.' },
+    { en: 'How much do I owe you?', it: 'Quanto le devo?' }
+  ]);
+  ensurePack('train', 'Stazione / treno', [
+    { en: 'Is this seat reserved?', it: 'Questo posto è prenotato?' },
+    { en: 'Where can I buy a ticket?', it: 'Dove posso comprare un biglietto?' },
+    { en: 'Does this train stop in Bologna?', it: 'Questo treno ferma a Bologna?' },
+    { en: 'I think I am on the wrong train.', it: 'Credo di essere sul treno sbagliato.' }
+  ]);
+  ensurePack('weather', 'Meteo', [
+    { en: 'It is foggy this morning.', it: 'C\'è nebbia questa mattina.' },
+    { en: 'The storm is coming.', it: 'Sta arrivando la tempesta.' },
+    { en: 'What is the temperature today?', it: 'Qual è la temperatura oggi?' },
+    { en: 'It feels colder than it looks.', it: 'Sembra più freddo di quanto non sia.' }
+  ]);
+  ensurePack('cafe', 'Bar / caffè', [
+    { en: 'Do you have soya milk?', it: 'Avete il latte di soia?' },
+    { en: 'A tea with lemon, please.', it: 'Un tè al limone, per favore.' },
+    { en: 'Can I sit by the window?', it: 'Posso sedermi vicino alla finestra?' },
+    { en: 'Is this seat taken?', it: 'Questo posto è occupato?' }
+  ]);
+  ensurePack('pharmacy', 'Farmacia', [
+    { en: 'I have a stomachache.', it: 'Ho mal di stomaco.' },
+    { en: 'Is this cream available without a prescription?', it: 'Questa crema si vende senza ricetta?' },
+    { en: 'How long does it take to work?', it: 'Quanto ci mette a fare effetto?' },
+    { en: 'I need plasters and antiseptic.', it: 'Mi servono cerotti e disinfettante.' }
+  ]);
+
+  // Nuovi temi
+  ensurePack('bank', 'Banca / soldi', [
+    { en: 'I would like to open an account.', it: 'Vorrei aprire un conto.' },
+    { en: 'Where is the nearest cash machine?', it: 'Dov\'è il bancomat più vicino?' },
+    { en: 'Can I withdraw money here?', it: 'Posso prelevare qui?' },
+    { en: 'What is the exchange rate today?', it: 'Qual è il cambio di oggi?' },
+    { en: 'I need to transfer money abroad.', it: 'Devo trasferire soldi all\'estero.' },
+    { en: 'My card has been blocked.', it: 'La mia carta è bloccata.' },
+    { en: 'Is there a fee for this service?', it: 'C\'è una commissione per questo servizio?' },
+    { en: 'I forgot my PIN.', it: 'Ho dimenticato il PIN.' }
+  ]);
+  ensurePack('work', 'Lavoro / ufficio', [
+    { en: 'When is the next meeting?', it: 'Quando è la prossima riunione?' },
+    { en: 'Could you send me the file, please?', it: 'Potrebbe mandarmi il file, per favore?' },
+    { en: 'I will be working from home tomorrow.', it: 'Domani lavorerò da casa.' },
+    { en: 'Let us schedule a call for Monday.', it: 'Fissiamo una chiamata per lunedì.' },
+    { en: 'The deadline is next Friday.', it: 'La scadenza è venerdì prossimo.' },
+    { en: 'I need more time to finish this.', it: 'Mi serve più tempo per finire questo.' },
+    { en: 'Who is in charge of this project?', it: 'Chi è responsabile di questo progetto?' },
+    { en: 'Please keep me updated.', it: 'Mi tenga aggiornato, per favore.' }
+  ]);
+  ensurePack('social', 'Sociale / amici', [
+    { en: 'Would you like to go out this evening?', it: 'Ti va di uscire stasera?' },
+    { en: 'What are you doing at the weekend?', it: 'Cosa fai nel weekend?' },
+    { en: 'Shall we meet for a coffee?', it: 'Ci vediamo per un caffè?' },
+    { en: 'I am busy on Saturday.', it: 'Sabato sono occupato.' },
+    { en: 'That sounds great!', it: 'Sembra fantastico!' },
+    { en: 'Sorry, I cannot make it.', it: 'Scusa, non posso venirci.' },
+    { en: 'Let me know when you are free.', it: 'Fammi sapere quando sei libero.' },
+    { en: 'It was nice to see you again.', it: 'È stato bello rivederti.' }
+  ]);
+})();

@@ -1,10 +1,9 @@
 {
-  "version": "16.19",
+  "version": "16.20",
   "date": "2026-09-25",
   "changes": [
-    "Più dialoghi viaggio (taxi, stazione, hotel, farmacia, ristorante, museo…)",
-    "Progresso dialoghi (✓ sui completati) — solo localStorage, zero lag",
-    "Valutazione offline leggera delle risposte nel dialogo",
-    "Audio dialogo en-GB leggermente più chiaro"
+    "Dialoghi: 28 → 45 (telefono, banca, cinema, reclamo, lavoro, volo…)",
+    "Frasi ascolto: 88 → 155 in 14 temi (+ banca, lavoro, sociale)",
+    "Tutte con traduzione IT offline"
   ]
 }
