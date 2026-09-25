@@ -1,4 +1,4 @@
-const CACHE = 'quaderno-inglese-v16-6';
+const CACHE = 'quaderno-inglese-v16-7';
 const CORE = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const CORE = [
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './icons/apple-touch-icon.png',
   './data/oxford3000.js',
   './data/oxford-it.js',
   './data/sentences.js',

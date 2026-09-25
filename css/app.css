@@ -669,3 +669,40 @@ code {
 .quiz-opt.correct { border-color: var(--ok); background: rgba(52,211,153,.12); }
 .quiz-opt.wrong { border-color: var(--danger); background: rgba(248,113,113,.1); }
 .quiz-score { text-align: center; font-size: 16px; font-weight: 700; color: var(--accent); padding: 12px; }
+
+.course-hero { padding: 16px; }
+.course-hero-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.course-hero strong { display:block; font-size:17px; margin-top:2px; }
+.course-ring {
+  width:54px; height:54px; border-radius:50%;
+  border:4px solid var(--line); border-top-color: var(--accent);
+  display:grid; place-items:center; font-size:12px; font-weight:700; color:var(--accent);
+  flex-shrink:0;
+}
+.course-progress-bar {
+  height:8px; background:var(--line); border-radius:99px; overflow:hidden; margin:12px 0 6px;
+}
+.course-progress-bar i { display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); border-radius:99px; transition:width .3s; }
+.course-units { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
+.course-unit {
+  flex-shrink:0; border:1px solid var(--line); background:var(--surface);
+  border-radius:99px; padding:8px 14px; font-size:12px; font-weight:600;
+  color:var(--muted); cursor:pointer; font-family:var(--font);
+}
+.course-unit.active { color:var(--text); border-color:var(--accent); background:rgba(56,189,248,.1); }
+.course-lesson-bar { display:flex; align-items:center; justify-content:space-between; }
+.course-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:10px 0 14px; }
+.cstep {
+  border:1px solid var(--line); background:var(--surface); border-radius:12px;
+  padding:10px 6px; font-size:11px; font-weight:600; color:var(--muted);
+  cursor:pointer; font-family:var(--font); display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+.cstep span {
+  width:22px; height:22px; border-radius:50%; background:var(--surface-2);
+  display:grid; place-items:center; font-size:11px;
+}
+.cstep.active { color:var(--text); border-color:var(--accent); }
+.cstep.active span { background:var(--accent); color:#0b1220; }
+.cstep.done span { background:rgba(52,211,153,.2); color:var(--ok); }
+.course-nav-btns { display:grid; grid-template-columns:1fr 1.4fr; gap:8px; margin-top:14px; }
+.oxford-auto-toggle { margin:4px 0 8px; padding:10px 12px; background:var(--surface); border:1px solid var(--line); border-radius:12px; }

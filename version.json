@@ -1,11 +1,11 @@
 {
-  "version": "16.5",
+  "version": "16.7",
   "date": "2026-09-25",
-  "title": "Quaderno d'Inglese V16.5",
+  "title": "Quaderno d'Inglese V16.7",
   "changes": [
-    "Corso ampliato a 18 lezioni (A1 + intro A2)",
-    "Oxford offline ~67% copertura lista (priorità A1–A2), resto via cache Gemini",
-    "Statistiche: streak giorni, minuti studio, parole, da ripassare",
-    "Gemini più veloce: maxOutputTokens 512, retry più corti, prompt più brevi, fallback lite, preconnect"
+    "Nuova icona app (quaderno + Q)",
+    "Corso ristrutturato: unità, progresso, passi Parole→Frasi→Quiz",
+    "Oxford: auto prossima parola + pronuncia automatica",
+    "Toggle auto Oxford e indicatore progresso nella lista filtrata"
   ]
 }
