@@ -1,11 +1,11 @@
 {
-  "version": "16.3",
-  "date": "2026-09-24",
-  "title": "Quaderno d'Inglese V16.3",
+  "version": "16.5",
+  "date": "2026-09-25",
+  "title": "Quaderno d'Inglese V16.5",
   "changes": [
-    "Dizionario Oxford offline ampliato (~900 voci A1–B1)",
-    "Dialoghi pronti offline in Conversazione (scenari per livello)",
-    "Suggerimenti frase e avanzamento dialogo senza Gemini",
-    "Ripeti e Oxford restano istantanei offline"
+    "Corso ampliato a 18 lezioni (A1 + intro A2)",
+    "Oxford offline ~67% copertura lista (priorità A1–A2), resto via cache Gemini",
+    "Statistiche: streak giorni, minuti studio, parole, da ripassare",
+    "Gemini più veloce: maxOutputTokens 512, retry più corti, prompt più brevi, fallback lite, preconnect"
   ]
 }

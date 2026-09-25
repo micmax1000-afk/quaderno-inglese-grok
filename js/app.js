@@ -7,16 +7,17 @@
     settings: 'quaderno_v16_settings',
     vocab: 'quaderno_v16_vocab',
     theme: 'quaderno_v16_theme',
-    oxfordCache: 'quaderno_v16_oxford_cache'
+    oxfordCache: 'quaderno_v16_oxford_cache',
+    stats: 'quaderno_v16_stats'
   };
 
   const FALLBACK_MODELS = [
     'gemini-3.6-flash',
-    'gemini-3.8-flash',
-    'gemini-3.7-flash',
-    'gemini-3.5-flash',
     'gemini-3.5-flash-lite',
-    'gemini-3.1-flash-lite'
+    'gemini-3.1-flash-lite',
+    'gemini-3.5-flash',
+    'gemini-3.7-flash',
+    'gemini-3.8-flash'
   ];
 
   // ─── State ───────────────────────────────────────────────
@@ -108,6 +109,7 @@
     );
     if (name === 'learn') renderVocabList();
     if (name === 'home') updateHome();
+    if (name === 'course') renderCourseList();
   }
 
   // ─── Speech ──────────────────────────────────────────────
@@ -159,14 +161,18 @@
 
   function friendlyError(msg) {
     const m = String(msg || '').toLowerCase();
-    if (/no longer available|update your code|gemini-2\.5|is not found|not supported for generatecontent/i.test(m))
-      return 'Modello non disponibile. Nelle Impostazioni scegli gemini-3.6-flash e riprova.';
+    if (/no longer available|update your code|gemini-2\.5|is not found|not supported for generatecontent|not found for api version/i.test(m))
+      return 'Modello non disponibile. Vai in Impostazioni e scegli Gemini 3.6 Flash (o un altro 3.x).';
     if (/high demand|overloaded|try again later|temporarily unavailable/.test(m))
-      return 'Gemini è momentaneamente sovraccarico. Riprova tra poco.';
+      return 'Gemini sovraccarico. Puoi continuare offline (Ripeti / Corso / Oxford). Riprova l’AI tra poco.';
     if (/resource_exhausted|rate limit|429/.test(m))
-      return 'Limite richieste raggiunto. Attendi un attimo e riprova.';
+      return 'Limite richieste Gemini. Usa le funzioni offline oppure attendi 1–2 minuti.';
     if (/api key|401|403|invalid|permission/.test(m))
-      return 'API Key non valida. Controllala nelle Impostazioni.';
+      return 'API Key non valida o mancante. Controllala in Impostazioni → Gemini.';
+    if (/network|failed to fetch|offline/i.test(m))
+      return 'Nessuna connessione. Le funzioni offline restano disponibili.';
+    // evita dump tecnici lunghi
+    if (m.length > 160) return 'Errore Gemini. Prova un altro modello in Impostazioni o usa la modalità offline.';
     return String(msg || 'Gemini non disponibile.');
   }
 
@@ -231,7 +237,11 @@
             body: JSON.stringify({
               contents,
               systemInstruction: { parts: [{ text: String(systemPrompt || '') }] },
-              generationConfig: { responseMimeType: 'application/json' }
+              generationConfig: {
+                responseMimeType: 'application/json',
+                maxOutputTokens: 512,
+                temperature: 0.6
+              }
             })
           });
 
@@ -248,7 +258,7 @@
             if (isRetryable(errMsg, res.status)) {
               lastError = new Error(errMsg);
               if (attempt < 2) {
-                await sleep(600 * Math.pow(2, attempt));
+                await sleep(350 * Math.pow(2, attempt));
                 continue;
               }
               break; // next model
@@ -312,7 +322,7 @@
           if (/API Key|safety/i.test(msg)) throw e;
           if (/network|failed to fetch|TypeError/i.test(msg) || e.name === 'TypeError') {
             if (attempt < 2) {
-              await sleep(600 * Math.pow(2, attempt));
+              await sleep(350 * Math.pow(2, attempt));
               continue;
             }
           }
@@ -389,14 +399,31 @@
 
   // ─── Home ────────────────────────────────────────────────
   function updateHome() {
+    const st = loadStats();
     $('#statWords').textContent = vocab.length;
     $('#statDue').textContent = dueCards().length;
-    $('#statStreak').textContent = correctStreak;
+    const streakEl = $('#statStreak');
+    if (streakEl) streakEl.textContent = st.streak || 0;
+    // optional extra stats if elements exist
+    const m = $('#statMinutes');
+    if (m) m.textContent = Math.round(st.minutes || 0);
+    const cbadge = $('#courseProgressBadge');
+    if (cbadge && window.COURSE_A1) {
+      const prog = loadCourseProgress();
+      const total = window.COURSE_A1.lessons.length;
+      const done = Object.keys(prog.done || {}).length;
+      cbadge.textContent = done + '/' + total;
+    }
     const tip = $('#homeTipText');
+    const courseProg = loadCourseProgress();
+    const courseTotal = (window.COURSE_A1 && window.COURSE_A1.lessons) ? window.COURSE_A1.lessons.length : 0;
+    const courseDone = courseTotal ? Object.keys(courseProg.done || {}).length : 0;
     if (!getKey()) {
-      tip.textContent = 'Configura la chiave Gemini nelle Impostazioni per attivare l’AI.';
+      tip.textContent = 'Puoi studiare offline (Corso A1, Ripeti, Oxford). Per l’AI aggiungi la chiave Gemini.';
     } else if (dueCards().length > 0) {
       tip.textContent = `Hai ${dueCards().length} parole da ripassare oggi.`;
+    } else if (courseDone < courseTotal) {
+      tip.textContent = `Corso A1: ${courseDone}/${courseTotal} lezioni. Continua quando vuoi.`;
     } else {
       tip.textContent = 'Inizia una conversazione o esplora Oxford 3000.';
     }
@@ -406,20 +433,12 @@
   function talkSystem() {
     const lvl = getLevel();
     const tp = getTopic();
-    return [
-      `Sei un insegnante d'inglese paziente e incoraggiante, madrelingua, che conversa con uno studente italiano di livello ${lvl}.`,
-      'Parli SOLO dopo che lo studente ha scritto una frase completa.',
-      'Per ogni turno:',
-      '1. Individua errori grammaticali, lessicali o di naturalezza.',
-      '2. Continua la conversazione in modo naturale' +
-        (tp ? `, sul tema: ${tp}` : '') +
-        ', ponendo domande brevi.',
-      '3. La reply deve essere in inglese, 1-3 frasi, adatta al livello.',
-      '4. Le spiegazioni (why) in ITALIANO, brevi e chiare.',
-      '5. Se la frase è corretta, corrections è un array vuoto.',
-      'Rispondi SOLO con JSON valido, senza markdown:',
-      '{"corrections":[{"wrong":"...","right":"...","why":"..."}],"reply":"..."}'
-    ].join('\n');
+    return (
+      `Insegnante inglese per studente italiano livello ${lvl}.` +
+      (tp ? ` Tema: ${tp}.` : '') +
+      ' Correggi errori; reply in inglese breve (1-2 frasi); why in italiano. ' +
+      'SOLO JSON: {"corrections":[{"wrong":"","right":"","why":""}],"reply":""}'
+    );
   }
 
   function addTalkBubble(role, text, streaming) {
@@ -653,6 +672,7 @@
       }
       thread.appendChild(bubble);
       talkHistory.push({ role: 'model', text: reply });
+      touchStudy(2, 'talk');
       if (autoSpeak()) speak(reply);
       setTalkStatus('');
       updateHome();
@@ -779,32 +799,75 @@
   function normalizeSpeech(s) {
     return String(s || '')
       .toLowerCase()
-      .replace(/[.,!?;:'"]/g, '')
+      .replace(/[.,!?;:'"¿¡]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
+  }
+
+  // Piccole correzioni tipiche STT
+  function softMatch(a, b) {
+    if (a === b) return true;
+    const pairs = [
+      ['a', 'the'], ['the', 'a'],
+      ['its', "it's"], ["it's", 'its'],
+      ['there', 'their'], ['their', 'there'],
+      ['to', 'two'], ['two', 'to'],
+      ['for', 'four'], ['four', 'for']
+    ];
+    for (const [x, y] of pairs) {
+      if ((a === x && b === y) || (a === y && b === x)) return true;
+    }
+    // prefisso comune (es. lunch/lounge confusione parziale)
+    if (a.length >= 4 && b.length >= 4 && (a.startsWith(b.slice(0, 3)) || b.startsWith(a.slice(0, 3))))
+      return a.length - b.length <= 2 && b.length - a.length <= 2;
+    return false;
   }
 
   function offlineEvaluate(target, spoken) {
     const a = normalizeSpeech(target).split(' ').filter(Boolean);
     const b = normalizeSpeech(spoken).split(' ').filter(Boolean);
     if (!a.length) return { ok: false, feedback: 'Nessuna frase target.' };
+    if (normalizeSpeech(target) === normalizeSpeech(spoken)) {
+      return { ok: true, translation: '(offline)', feedback: 'Perfetto — corrispondenza esatta.' };
+    }
     let hits = 0;
     const used = new Set();
     for (const w of b) {
-      const i = a.findIndex((x, idx) => x === w && !used.has(idx));
-      if (i >= 0) {
+      let found = -1;
+      for (let i = 0; i < a.length; i++) {
+        if (used.has(i)) continue;
+        if (a[i] === w || softMatch(a[i], w)) {
+          found = i;
+          break;
+        }
+      }
+      if (found >= 0) {
         hits++;
-        used.add(i);
+        used.add(found);
       }
     }
     const ratio = hits / a.length;
-    const ok = ratio >= 0.7 || normalizeSpeech(target) === normalizeSpeech(spoken);
+    // penalità leggera se ordine molto diverso
+    let orderBonus = 0;
+    let last = -1;
+    let ordered = 0;
+    for (const w of b) {
+      const i = a.findIndex((x, idx) => (x === w || softMatch(x, w)) && idx >= last);
+      if (i >= 0) {
+        ordered++;
+        last = i;
+      }
+    }
+    const orderRatio = b.length ? ordered / Math.max(a.length, b.length) : 0;
+    const score = ratio * 0.75 + orderRatio * 0.25;
+    const ok = score >= 0.65;
+    const pct = Math.round(score * 100);
     return {
       ok,
-      translation: '(valutazione offline)',
+      translation: '(valutazione offline ~' + pct + '%)',
       feedback: ok
-        ? 'Buona ripetizione (controllo offline).'
-        : 'Riprova: alcune parole non coincidono (controllo offline).'
+        ? 'Buona ripetizione offline (' + pct + '%).'
+        : 'Riprova offline (' + pct + '%). Controlla le parole mancanti.'
     };
   }
 
@@ -827,6 +890,7 @@
       $('#rtResult').hidden = false;
       setRtStatus('');
       if (r.ok) correctStreak++;
+      touchStudy(1, 'rt');
       updateHome();
     } catch (e) {
       // Offline fallback evaluation
@@ -840,6 +904,7 @@
       $('#rtResult').hidden = false;
       setRtStatus('⚡ Valutazione offline');
       if (r.ok) correctStreak++;
+      touchStudy(1, 'rt');
       updateHome();
     }
   }
@@ -1149,6 +1214,151 @@
     return r;
   }
 
+
+  // ─── Course A1 ───────────────────────────────────────────
+  const COURSE_KEY = 'quaderno_v16_course';
+  function loadCourseProgress() {
+    return loadJSON(COURSE_KEY, { done: {}, quiz: {} });
+  }
+  function saveCourseProgress(p) {
+    saveJSON(COURSE_KEY, p);
+  }
+
+  let currentLesson = null;
+  let quizIndex = 0;
+  let quizScore = 0;
+
+  function renderCourseList() {
+    const data = window.COURSE_A1;
+    const list = $('#courseList');
+    const lessonView = $('#courseLesson');
+    if (!data || !list) return;
+    lessonView.hidden = true;
+    list.hidden = false;
+    const prog = loadCourseProgress();
+    const total = data.lessons.length;
+    const doneCount = data.lessons.filter((l) => prog.done[l.id]).length;
+    const badge = $('#courseProgressBadge');
+    if (badge) badge.textContent = doneCount + '/' + total;
+    list.innerHTML = data.lessons
+      .map((l, i) => {
+        const done = !!prog.done[l.id];
+        const qs = prog.quiz[l.id];
+        const sub = done
+          ? qs
+            ? 'Completata · quiz ' + qs.score + '/' + qs.total
+            : 'Completata'
+          : l.words.length + ' parole · ' + l.quiz.length + ' quiz';
+        return (
+          '<button type="button" class="course-item' +
+          (done ? ' done' : '') +
+          '" data-lesson="' +
+          l.id +
+          '"><span class="ci-num">' +
+          (done ? '✓' : i + 1) +
+          '</span><span style="flex:1"><strong>' +
+          escapeHtml(l.title) +
+          '</strong><small>' +
+          escapeHtml(sub) +
+          '</small></span></button>'
+        );
+      })
+      .join('');
+  }
+
+  function openLesson(id) {
+    const data = window.COURSE_A1;
+    const lesson = data.lessons.find((l) => l.id === id);
+    if (!lesson) return;
+    currentLesson = lesson;
+    quizIndex = 0;
+    quizScore = 0;
+    $('#courseList').hidden = true;
+    const view = $('#courseLesson');
+    view.hidden = false;
+    $('#courseLessonTitle').textContent = lesson.title;
+    // words
+    $('#courseWords').innerHTML = lesson.words
+      .map(
+        (w) =>
+          '<div class="word-row"><strong>' +
+          escapeHtml(w.en) +
+          '</strong><span class="it">' +
+          escapeHtml(w.it) +
+          '</span></div>'
+      )
+      .join('');
+    // phrases
+    $('#coursePhrases').innerHTML = lesson.phrases
+      .map(
+        (p) =>
+          '<div class="phrase-row"><span>' +
+          escapeHtml(p) +
+          '</span><button type="button" class="ghost-btn" data-speak="' +
+          escapeHtml(p) +
+          '">🔊</button></div>'
+      )
+      .join('');
+    // quiz reset
+    renderQuizQ();
+    // tabs
+    $$('#courseTabs .seg').forEach((b) => b.classList.toggle('active', b.dataset.ctab === 'words'));
+    $('#courseWords').hidden = false;
+    $('#coursePhrases').hidden = true;
+    $('#courseQuiz').hidden = true;
+  }
+
+  function renderQuizQ() {
+    const box = $('#courseQuiz');
+    if (!currentLesson) return;
+    if (quizIndex >= currentLesson.quiz.length) {
+      const total = currentLesson.quiz.length;
+      const prog = loadCourseProgress();
+      prog.done[currentLesson.id] = true;
+      prog.quiz[currentLesson.id] = { score: quizScore, total };
+      saveCourseProgress(prog);
+      box.innerHTML =
+        '<div class="quiz-score">Punteggio: ' +
+        quizScore +
+        '/' +
+        total +
+        '</div><p class="hint center">Lezione segnata come completata.</p><button type="button" class="primary-btn" id="quizBackList" style="width:100%">Torna alle lezioni</button>';
+      $('#quizBackList')?.addEventListener('click', renderCourseList);
+      updateHome();
+      return;
+    }
+    const item = currentLesson.quiz[quizIndex];
+    box.innerHTML =
+      '<div class="quiz-q">' +
+      (quizIndex + 1) +
+      '. ' +
+      escapeHtml(item.q) +
+      '</div>' +
+      item.options
+        .map(
+          (o, i) =>
+            '<button type="button" class="quiz-opt" data-qi="' + i + '">' + escapeHtml(o) + '</button>'
+        )
+        .join('');
+    $$('.quiz-opt', box).forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const i = parseInt(btn.dataset.qi, 10);
+        const correct = i === item.a;
+        if (correct) quizScore++;
+        btn.classList.add(correct ? 'correct' : 'wrong');
+        $$('.quiz-opt', box).forEach((b) => {
+          b.disabled = true;
+          if (parseInt(b.dataset.qi, 10) === item.a) b.classList.add('correct');
+        });
+        setTimeout(() => {
+          quizIndex++;
+          renderQuizQ();
+        }, 650);
+      });
+    });
+  }
+
+
   // ─── Wire events ─────────────────────────────────────────
   function init() {
     initTheme();
@@ -1430,6 +1640,79 @@
       renderVocabList();
       nextReview();
       alert('Dati azzerati.');
+    });
+
+    // Course
+    $('#courseList')?.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-lesson]');
+      if (btn) openLesson(btn.dataset.lesson);
+    });
+    $('#courseBack')?.addEventListener('click', renderCourseList);
+    $$('#courseTabs .seg').forEach((b) =>
+      b.addEventListener('click', () => {
+        $$('#courseTabs .seg').forEach((x) => x.classList.remove('active'));
+        b.classList.add('active');
+        const t = b.dataset.ctab;
+        $('#courseWords').hidden = t !== 'words';
+        $('#coursePhrases').hidden = t !== 'phrases';
+        $('#courseQuiz').hidden = t !== 'quiz';
+        if (t === 'quiz') {
+          quizIndex = 0;
+          quizScore = 0;
+          renderQuizQ();
+        }
+      })
+    );
+    $('#coursePhrases')?.addEventListener('click', (e) => {
+      const s = e.target.dataset.speak;
+      if (s) speak(s);
+    });
+
+    // Install PWA
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = $('#installBtn');
+      if (btn) btn.style.display = 'block';
+      const hint = $('#installHint');
+      if (hint) hint.textContent = 'Puoi installare Quaderno come app.';
+    });
+    $('#installBtn')?.addEventListener('click', async () => {
+      if (!deferredPrompt) {
+        alert('Usa il menu del browser → Aggiungi a schermata Home.');
+        return;
+      }
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      const btn = $('#installBtn');
+      if (btn) btn.style.display = 'none';
+    });
+
+    // Backup rapido
+    $('#backupNow')?.addEventListener('click', () => {
+      const blob = new Blob(
+        [
+          JSON.stringify(
+            {
+              vocab,
+              settings: loadJSON(STORAGE.settings, {}),
+              course: loadCourseProgress(),
+              oxfordCache: oxfordCache(),
+              version: 16.3,
+              exportedAt: new Date().toISOString()
+            },
+            null,
+            2
+          )
+        ],
+        { type: 'application/json' }
+      );
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'quaderno-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
     });
 
     // SW

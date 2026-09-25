@@ -1,4 +1,4 @@
-const CACHE = 'quaderno-inglese-v16-3';
+const CACHE = 'quaderno-inglese-v16-5';
 const CORE = [
   './',
   './index.html',
@@ -9,7 +9,8 @@ const CORE = [
   './icons/icon-512.png',
   './data/oxford3000.js',
   './data/oxford-it.js',
-  './data/sentences.js'
+  './data/sentences.js',
+  './data/course-a1.js'
 ];
 
 self.addEventListener('install', (event) => {

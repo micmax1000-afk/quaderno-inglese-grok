@@ -121,7 +121,7 @@ body {
 
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 .stat {
@@ -632,3 +632,40 @@ code {
   color: var(--muted);
 }
 .dlg-hint b { color: var(--accent); }
+
+.course-list { display: flex; flex-direction: column; gap: 8px; }
+.course-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 14px 16px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); cursor: pointer; text-align: left; color: var(--text);
+  font-family: var(--font); width: 100%;
+}
+.course-item:active { transform: scale(.99); }
+.course-item.done { border-color: var(--ok); }
+.course-item .ci-num {
+  width: 28px; height: 28px; border-radius: 8px; background: var(--surface-2);
+  display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--accent); flex-shrink: 0;
+}
+.course-item.done .ci-num { background: rgba(52,211,153,.15); color: var(--ok); }
+.course-item strong { display: block; font-size: 14px; }
+.course-item small { color: var(--muted); font-size: 11px; }
+.course-lesson h3 { font-size: 18px; margin: 8px 0 12px; }
+.course-panel { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.word-row {
+  display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; font-size: 14px;
+}
+.word-row .it { color: var(--teal); }
+.phrase-row {
+  padding: 12px 14px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; font-size: 15px; display: flex; justify-content: space-between; align-items: center; gap: 8px;
+}
+.quiz-q { font-weight: 600; margin-bottom: 8px; font-size: 15px; }
+.quiz-opt {
+  display: block; width: 100%; text-align: left; padding: 12px 14px; margin-bottom: 6px;
+  border-radius: 12px; border: 1px solid var(--line); background: var(--surface);
+  color: var(--text); font-family: var(--font); font-size: 14px; cursor: pointer;
+}
+.quiz-opt.correct { border-color: var(--ok); background: rgba(52,211,153,.12); }
+.quiz-opt.wrong { border-color: var(--danger); background: rgba(248,113,113,.1); }
+.quiz-score { text-align: center; font-size: 16px; font-weight: 700; color: var(--accent); padding: 12px; }

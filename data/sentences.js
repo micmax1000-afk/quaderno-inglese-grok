@@ -341,3 +341,46 @@ window.DIALOGUE_PACKS = {
     }
   ]
 };
+
+/* scenari extra */
+(function(){
+  const P = window.DIALOGUE_PACKS;
+  if (!P) return;
+  P.A1.push({
+    title: "Dal medico",
+    lines: [
+      { role: "ai", text: "Good morning. What seems to be the problem?" },
+      { role: "user_hint", text: "I have a headache and a sore throat." },
+      { role: "ai", text: "How long have you felt like this?" },
+      { role: "user_hint", text: "Since yesterday evening." }
+    ]
+  });
+  P.A2.push({
+    title: "In aeroporto",
+    lines: [
+      { role: "ai", text: "May I see your passport and boarding pass, please?" },
+      { role: "user_hint", text: "Of course. Here they are." },
+      { role: "ai", text: "Do you have any liquids in your hand luggage?" },
+      { role: "user_hint", text: "Only a small bottle of water." }
+    ]
+  });
+  P.B1.push({
+    title: "Colloquio di lavoro",
+    lines: [
+      { role: "ai", text: "Tell me about yourself and your experience." },
+      { role: "user_hint", text: "I have worked in customer service for three years and I enjoy helping people." },
+      { role: "ai", text: "Why do you want to join our team?" },
+      { role: "user_hint", text: "I admire your products and I want to grow in a dynamic company." }
+    ]
+  });
+  P.B2.push({
+    title: "Negoziare un prezzo",
+    lines: [
+      { role: "ai", text: "The quote we sent is based on current market rates." },
+      { role: "user_hint", text: "I understand. Would a longer contract allow a better discount?" },
+      { role: "ai", text: "Possibly. What volume are you considering per month?" },
+      { role: "user_hint", text: "Around two thousand units, if the unit price is competitive." }
+    ]
+  });
+})();
+

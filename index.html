@@ -11,6 +11,7 @@
 <link rel="icon" href="icons/icon-192.png">
 <title>Quaderno d'Inglese</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://generativelanguage.googleapis.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
 </head>
@@ -39,7 +40,8 @@
       <div class="stats-row" id="homeStats">
         <div class="stat"><b id="statWords">0</b><span>parole</span></div>
         <div class="stat"><b id="statDue">0</b><span>da ripassare</span></div>
-        <div class="stat"><b id="statStreak">0</b><span>corrette</span></div>
+        <div class="stat"><b id="statStreak">0</b><span>giorni</span></div>
+        <div class="stat"><b id="statMinutes">0</b><span>minuti</span></div>
       </div>
       <div class="action-grid">
         <button type="button" class="action-card primary" data-go="talk">
@@ -61,6 +63,11 @@
           <span class="ac-icon">🧠</span>
           <strong>AI Tutor</strong>
           <small>Domande e correzioni</small>
+        </button>
+        <button type="button" class="action-card" data-go="course">
+          <span class="ac-icon">📖</span>
+          <strong>Corso A1</strong>
+          <small>18 lezioni offline</small>
         </button>
       </div>
       <div class="card soft" id="homeTip">
@@ -203,6 +210,31 @@
       <div class="status-line" id="tutorStatus"></div>
     </section>
 
+    <!-- COURSE A1 -->
+    <section class="screen" data-screen="course">
+      <div class="screen-head">
+        <h2>Corso A1</h2>
+        <span class="badge" id="courseProgressBadge">0/18</span>
+      </div>
+      <div class="card soft">
+        <strong>Percorso offline</strong>
+        <p>18 lezioni con parole, frasi e quiz. Nessuna API richiesta.</p>
+      </div>
+      <div id="courseList" class="course-list"></div>
+      <div id="courseLesson" class="course-lesson" hidden>
+        <button type="button" class="text-btn" id="courseBack">← Lezioni</button>
+        <h3 id="courseLessonTitle"></h3>
+        <div class="seg-control" id="courseTabs">
+          <button type="button" class="seg active" data-ctab="words">Parole</button>
+          <button type="button" class="seg" data-ctab="phrases">Frasi</button>
+          <button type="button" class="seg" data-ctab="quiz">Quiz</button>
+        </div>
+        <div id="courseWords" class="course-panel"></div>
+        <div id="coursePhrases" class="course-panel" hidden></div>
+        <div id="courseQuiz" class="course-panel" hidden></div>
+      </div>
+    </section>
+
     <!-- SETTINGS -->
     <section class="screen" data-screen="settings">
       <div class="screen-head"><h2>Impostazioni</h2></div>
@@ -222,12 +254,12 @@
         <label class="field">
           <span>Modello</span>
           <select id="model">
+            <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite (veloce)</option>
             <option value="gemini-3.6-flash" selected>Gemini 3.6 Flash</option>
-            <option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
-            <option value="gemini-3.7-flash">Gemini 3.7 Flash</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite (veloce)</option>
             <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
-            <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite</option>
-            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite</option>
+            <option value="gemini-3.7-flash">Gemini 3.7 Flash</option>
+            <option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
           </select>
         </label>
         <p class="hint">Lo streaming usa <code>streamGenerateContent</code>. In caso di errore prova un modello diverso.</p>
@@ -267,6 +299,13 @@
       </div>
 
       <div class="card settings-card">
+        <h3>App</h3>
+        <button type="button" class="primary-btn" id="installBtn" style="display:none;width:100%">📲 Installa sul telefono</button>
+        <p class="hint" id="installHint">Su Android: menu browser → «Aggiungi a schermata Home».</p>
+        <button type="button" class="ghost-btn" id="backupNow" style="width:100%;margin-top:8px">💾 Backup rapido</button>
+      </div>
+
+      <div class="card settings-card">
         <h3>Dati</h3>
         <p class="hint">Tutto resta su questo dispositivo (localStorage).</p>
         <div class="btn-row">
@@ -293,6 +332,7 @@
 <script src="data/oxford3000.js"></script>
 <script src="data/oxford-it.js"></script>
 <script src="data/sentences.js"></script>
+<script src="data/course-a1.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

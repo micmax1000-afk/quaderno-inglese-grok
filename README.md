@@ -1,40 +1,36 @@
-# Quaderno d'Inglese — V16.2
+# Quaderno d'Inglese — V16.4
 
-PWA personale per studiare inglese. **Streaming Gemini** + **modalità offline** per velocità.
+PWA per studiare inglese: **streaming Gemini** + **molto offline**.
 
-## Novità V16.2
+## V16.4
 
-- **Frasi già pronte** per Ripeti e traduci (per livello e difficoltà) → zero attesa
-- **Traduzioni Oxford offline** (~440 parole frequenti A1–A2) → istantanee
-- Valutazione pronuncia **offline di fallback** se Gemini non risponde
-- Toggle in Impostazioni: frasi offline / traduzioni offline
-- Streaming Gemini solo dove serve (conversazione, tutor, parole non in dizionario)
+- Oxford offline ~**1300** voci (A1–B2)
+- **Corso A1**: 12 lezioni (parole, frasi, quiz) senza API
+- Valutazione **Ripeti** offline più tollerante
+- Dialoghi offline extra (medico, aeroporto, colloquio…)
+- **Installa PWA** + **Backup rapido**
+- Errori Gemini più chiari (e invito a usare offline)
 
-## Funzioni
+## Sezioni
 
-| Sezione | Offline | Gemini |
-|---------|---------|--------|
-| Ripeti | Frasi pronti + valutazione base | Valutazione intelligente (opzionale) |
-| Oxford | Traduzioni frequenti | Solo parole non in dizionario |
-| Conversazione | — | Streaming correzioni + reply |
-| AI Tutor | — | Streaming testo libero |
+| Sezione | Offline | Con Gemini |
+|---------|---------|------------|
+| Corso A1 | Sì | — |
+| Ripeti | Frasi + valutazione base | Valutazione smart |
+| Oxford | ~1300 traduzioni | Solo parole mancanti |
+| Conversazione | Dialoghi pronti | Streaming libero |
+| AI Tutor | — | Streaming |
 
 ## Uso
 
-1. Apri `index.html` o pubblica su GitHub Pages
-2. Impostazioni → API key Gemini (opzionale se usi solo offline)
-3. Tieni attivi i toggle **Frasi offline** e **Traduzioni Oxford offline**
+1. Estrai / pubblica la cartella
+2. (Opzionale) Impostazioni → API key Gemini
+3. Home → **Corso A1** o **Ripeti** per partire subito offline
 
-## Struttura
+## File
 
 ```
-index.html
-css/app.css
-js/app.js
-data/oxford3000.js      # lista 3000 parole
-data/oxford-it.js       # traduzioni offline
-data/sentences.js       # banca frasi
-icons/
-manifest.webmanifest
-sw.js
+index.html, css/app.css, js/app.js
+data/oxford3000.js, oxford-it.js, sentences.js, course-a1.js
+icons/, manifest.webmanifest, sw.js
 ```
