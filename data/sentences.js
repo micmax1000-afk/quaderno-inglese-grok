@@ -384,3 +384,634 @@ window.DIALOGUE_PACKS = {
   });
 })();
 
+/* Extra phrases V16.11 */
+(function () {
+  const extra = {
+  "A1": {
+    "1": [
+      "Open the window, please.",
+      "Close the door.",
+      "This is my bag.",
+      "Where is the bathroom?",
+      "I like English.",
+      "She is a teacher.",
+      "He is a student.",
+      "We are friends.",
+      "It is Monday today.",
+      "See you tomorrow."
+    ],
+    "2": [
+      "I need a ticket.",
+      "How much is it?",
+      "I want a coffee.",
+      "Can I have water?",
+      "The train is late.",
+      "I live near the park.",
+      "She has three brothers.",
+      "We study every day.",
+      "He works in a shop.",
+      "They play in the garden."
+    ],
+    "3": [
+      "I am learning English.",
+      "Please speak slowly.",
+      "I do not understand.",
+      "Can you help me?",
+      "Where do you live?",
+      "What is your name?",
+      "How old are you?",
+      "I am twenty years old.",
+      "Nice to meet you.",
+      "Have a nice day."
+    ],
+    "4": [
+      "I get up early.",
+      "She goes to bed late.",
+      "We have breakfast together.",
+      "He takes the bus.",
+      "They arrive at eight.",
+      "I leave home at seven.",
+      "The lesson starts soon.",
+      "Turn left at the corner.",
+      "Go straight ahead.",
+      "The museum is closed."
+    ],
+    "5": [
+      "It is raining today.",
+      "The sun is shining.",
+      "It is very hot.",
+      "Wear a warm coat.",
+      "I feel tired.",
+      "She feels happy.",
+      "We are hungry.",
+      "He is thirsty.",
+      "I need a break.",
+      "Let us go home."
+    ]
+  },
+  "A2": {
+    "1": [
+      "I have already finished my homework.",
+      "She has never been to London.",
+      "Have you ever tried sushi?",
+      "We are going to visit grandma.",
+      "He is going to buy a new phone.",
+      "What are you doing this weekend?",
+      "I would like a table for two.",
+      "Could you pass the salt?",
+      "The film was more interesting than the book.",
+      "This bag is bigger than that one."
+    ],
+    "2": [
+      "I went to the cinema yesterday.",
+      "She saw her friends last night.",
+      "Did you enjoy the party?",
+      "We did not stay long.",
+      "He was tired after work.",
+      "They were at the beach.",
+      "I found a good restaurant.",
+      "She lost her keys.",
+      "We arrived on time.",
+      "He left early this morning."
+    ],
+    "3": [
+      "You should see a doctor.",
+      "I have a sore throat.",
+      "My head hurts.",
+      "Take this medicine twice a day.",
+      "How long have you felt like this?",
+      "I need to make an appointment.",
+      "Exercise is good for you.",
+      "Try to sleep more.",
+      "Drink plenty of water.",
+      "I feel much better now."
+    ],
+    "4": [
+      "Excuse me, where is the station?",
+      "Is it far from here?",
+      "How do I get to the airport?",
+      "Take the second left.",
+      "The bus stop is opposite the bank.",
+      "A ticket to Milan, please.",
+      "Which platform for Rome?",
+      "The flight is delayed.",
+      "Where can I buy a map?",
+      "Thank you for your help."
+    ],
+    "5": [
+      "I am looking for a job.",
+      "She works in an office.",
+      "What do you do?",
+      "I am a software engineer.",
+      "We have a meeting at ten.",
+      "Please send me the email.",
+      "I will call you later.",
+      "Can we reschedule?",
+      "The project is almost finished.",
+      "I need more time."
+    ]
+  },
+  "B1": {
+    "1": [
+      "If it rains, we will stay at home.",
+      "I would travel more if I had time.",
+      "She has been studying English for two years.",
+      "They have just arrived at the hotel.",
+      "By the time we got there, the show had started.",
+      "I am used to waking up early.",
+      "You had better take an umbrella.",
+      "Unless you hurry, you will miss the train.",
+      "Although it was expensive, we booked the room.",
+      "Despite the traffic, we arrived on time."
+    ],
+    "2": [
+      "Could you tell me how to get to the museum?",
+      "I was wondering if you could help me.",
+      "Would you mind opening the window?",
+      "I am afraid I cannot make it tonight.",
+      "That sounds like a great idea.",
+      "Let me think about it and get back to you.",
+      "In my opinion, public transport is better.",
+      "On the one hand it is cheap; on the other it is slow.",
+      "As far as I know, the shop opens at nine.",
+      "To be honest, I prefer tea to coffee."
+    ],
+    "3": [
+      "The company is expanding into new markets.",
+      "We need to reduce costs without losing quality.",
+      "Customer feedback has been very positive.",
+      "I am responsible for the weekly reports.",
+      "Please find the details attached.",
+      "Shall we move on to the next point?",
+      "I completely agree with your proposal.",
+      "There seems to be a misunderstanding.",
+      "Let us schedule a follow-up meeting.",
+      "The deadline is the end of the month."
+    ],
+    "4": [
+      "I have been meaning to call you.",
+      "She ended up taking a different job.",
+      "We ran out of milk this morning.",
+      "He came up with a brilliant solution.",
+      "They put off the decision until Friday.",
+      "I look forward to hearing from you.",
+      "It depends on the weather.",
+      "Make sure you lock the door.",
+      "I cannot figure out this problem.",
+      "We should sort it out as soon as possible."
+    ]
+  },
+  "B2": {
+    "1": [
+      "Had I known earlier, I would have acted differently.",
+      "The more you practice, the more confident you become.",
+      "It is widely believed that exercise improves mood.",
+      "There is a growing need for renewable energy.",
+      "The proposal was rejected on the grounds of cost.",
+      "We must weigh the pros and cons carefully.",
+      "In light of recent events, plans may change.",
+      "The findings suggest a clear correlation.",
+      "Further research is required to confirm this.",
+      "The issue remains highly controversial."
+    ],
+    "2": [
+      "I would appreciate it if you could clarify that point.",
+      "Allow me to elaborate on the previous slide.",
+      "From a practical standpoint, this approach works better.",
+      "We are currently facing capacity constraints.",
+      "The contract is subject to final approval.",
+      "Please do not hesitate to contact me.",
+      "I am writing to follow up on our conversation.",
+      "Kindly confirm receipt of this message.",
+      "We look forward to a long-term partnership.",
+      "Thank you for your prompt attention to this matter."
+    ]
+  }
+};
+  const bank = window.SENTENCE_BANK || (window.SENTENCE_BANK = {});
+  for (const lvl of Object.keys(extra)) {
+    if (!bank[lvl]) bank[lvl] = {};
+    for (const diff of Object.keys(extra[lvl])) {
+      const key = String(diff);
+      const arr = extra[lvl][diff] || [];
+      if (!bank[lvl][key]) bank[lvl][key] = [];
+      for (const s of arr) {
+        if (!bank[lvl][key].includes(s)) bank[lvl][key].push(s);
+      }
+    }
+  }
+})();
+
+(function () {
+  const P = window.DIALOGUE_PACKS;
+  if (!P) return;
+  const packs = {
+    A1: [
+      { title: "Al bar", lines: [
+        { role: "ai", text: "Hi! What would you like?" },
+        { role: "user_hint", text: "A coffee and a sandwich, please." },
+        { role: "ai", text: "For here or to go?" },
+        { role: "user_hint", text: "To go, please." }
+      ]},
+      { title: "Al supermercato", lines: [
+        { role: "ai", text: "Excuse me, where is the milk?" },
+        { role: "user_hint", text: "It is in aisle three, next to the yoghurt." },
+        { role: "ai", text: "Thank you very much." },
+        { role: "user_hint", text: "You are welcome." }
+      ]}
+    ],
+    A2: [
+      { title: "In hotel", lines: [
+        { role: "ai", text: "Good evening. Do you have a reservation?" },
+        { role: "user_hint", text: "Yes, under the name Rossi." },
+        { role: "ai", text: "A double room for two nights. Is that correct?" },
+        { role: "user_hint", text: "Yes. What time is breakfast?" }
+      ]},
+      { title: "Dal farmacista", lines: [
+        { role: "ai", text: "Good morning. How can I help you?" },
+        { role: "user_hint", text: "I need something for a headache." },
+        { role: "ai", text: "Have you taken any medicine today?" },
+        { role: "user_hint", text: "No, not yet." }
+      ]}
+    ],
+    B1: [
+      { title: "Chiedere indicazioni", lines: [
+        { role: "ai", text: "Sorry to bother you. Is the museum this way?" },
+        { role: "user_hint", text: "Yes. Go straight for two blocks and turn right." },
+        { role: "ai", text: "How long does it take on foot?" },
+        { role: "user_hint", text: "About ten minutes." }
+      ]}
+    ],
+    B2: [
+      { title: "Riunione di lavoro", lines: [
+        { role: "ai", text: "Shall we start with the quarterly results?" },
+        { role: "user_hint", text: "Yes. Sales are up five percent compared to last year." },
+        { role: "ai", text: "What is driving the growth?" },
+        { role: "user_hint", text: "Mainly the new product line in Europe." }
+      ]}
+    ]
+  };
+  for (const lvl of Object.keys(packs)) {
+    if (!P[lvl]) P[lvl] = [];
+    for (const d of packs[lvl]) {
+      if (!P[lvl].some((x) => x.title === d.title)) P[lvl].push(d);
+    }
+  }
+})();
+/* Extra B2 V16.12 */
+(function () {
+  const bank = window.SENTENCE_BANK || (window.SENTENCE_BANK = {});
+  if (!bank.B2) bank.B2 = {};
+  const add = {
+    3: [
+      "The more you practise, the more confident you become.",
+      "Had I known earlier, I would have acted differently.",
+      "It is widely believed that exercise improves mood.",
+      "We must weigh the pros and cons carefully.",
+      "In light of recent events, plans may change.",
+      "Further research is required to confirm this.",
+      "I would appreciate it if you could clarify that point.",
+      "From a practical standpoint, this approach works better.",
+      "Please do not hesitate to contact me.",
+      "We look forward to a long-term partnership."
+    ],
+    4: [
+      "Despite the challenges, the team delivered on time.",
+      "The proposal was rejected on the grounds of cost.",
+      "There is a growing need for renewable energy.",
+      "Allow me to elaborate on the previous point.",
+      "We are currently facing capacity constraints.",
+      "The contract is subject to final approval.",
+      "I am writing to follow up on our conversation.",
+      "Kindly confirm receipt of this message.",
+      "Thank you for your prompt attention to this matter.",
+      "The issue remains highly controversial."
+    ]
+  };
+  for (const k of Object.keys(add)) {
+    if (!bank.B2[k]) bank.B2[k] = [];
+    for (const s of add[k]) if (!bank.B2[k].includes(s)) bank.B2[k].push(s);
+  }
+})();
+
+/* Packs ascolto viaggio + scrittura guidata V16.14 */
+window.LISTEN_PACKS = [
+  {
+    id: "airport",
+    title: "Aeroporto",
+    items: [
+      { en: "Where is the check-in desk?", it: "Dov'è il bancone del check-in?" },
+      { en: "I would like a window seat, please.", it: "Vorrei un posto vicino al finestrino, per favore." },
+      { en: "Is this the queue for boarding?", it: "Questa è la fila per l'imbarco?" },
+      { en: "My flight is delayed by one hour.", it: "Il mio volo è in ritardo di un'ora." },
+      { en: "Where can I find my gate?", it: "Dove posso trovare il mio gate?" },
+      { en: "Do I need to show my passport?", it: "Devo mostrare il passaporto?" },
+      { en: "How long is the security check?", it: "Quanto dura il controllo di sicurezza?" },
+      { en: "Is there a free Wi-Fi here?", it: "C'è il Wi-Fi gratis qui?" }
+    ]
+  },
+  {
+    id: "hotel",
+    title: "Hotel",
+    items: [
+      { en: "I have a reservation under Rossi.", it: "Ho una prenotazione a nome Rossi." },
+      { en: "What time is check-in?", it: "A che ora è il check-in?" },
+      { en: "Is breakfast included?", it: "La colazione è inclusa?" },
+      { en: "Could I have a quiet room, please?", it: "Potrei avere una camera tranquilla, per favore?" },
+      { en: "The air conditioning is not working.", it: "Il condizionatore non funziona." },
+      { en: "What time is check-out?", it: "A che ora è il check-out?" },
+      { en: "Is there a lift in the building?", it: "C'è un ascensore nell'edificio?" },
+      { en: "Can I leave my luggage here?", it: "Posso lasciare i bagagli qui?" }
+    ]
+  },
+  {
+    id: "restaurant",
+    title: "Ristorante",
+    items: [
+      { en: "A table for two, please.", it: "Un tavolo per due, per favore." },
+      { en: "Could we see the menu?", it: "Potremmo vedere il menu?" },
+      { en: "I would like the pasta, please.", it: "Vorrei la pasta, per favore." },
+      { en: "Is this dish spicy?", it: "Questo piatto è piccante?" },
+      { en: "Could I have a glass of water?", it: "Potrei avere un bicchiere d'acqua?" },
+      { en: "The bill, please.", it: "Il conto, per favore." },
+      { en: "Is service included?", it: "Il servizio è incluso?" },
+      { en: "Everything was delicious, thank you.", it: "Era tutto delizioso, grazie." }
+    ]
+  },
+  {
+    id: "directions",
+    title: "Indicazioni",
+    items: [
+      { en: "Excuse me, where is the station?", it: "Mi scusi, dov'è la stazione?" },
+      { en: "How do I get to the museum?", it: "Come arrivo al museo?" },
+      { en: "Is it far from here?", it: "È lontano da qui?" },
+      { en: "Go straight and turn left.", it: "Vai dritto e gira a sinistra." },
+      { en: "Take the second right.", it: "Prendi la seconda a destra." },
+      { en: "How long does it take on foot?", it: "Quanto ci vuole a piedi?" },
+      { en: "Is there a bus to the centre?", it: "C'è un autobus per il centro?" },
+      { en: "Thank you for your help.", it: "Grazie per l'aiuto." }
+    ]
+  },
+  {
+    id: "shopping",
+    title: "Shopping",
+    items: [
+      { en: "How much does this cost?", it: "Quanto costa questo?" },
+      { en: "Do you have a smaller size?", it: "Avete una taglia più piccola?" },
+      { en: "Can I try this on?", it: "Posso provarlo?" },
+      { en: "Do you accept cards?", it: "Accettate le carte?" },
+      { en: "I am just looking, thank you.", it: "Sto solo guardando, grazie." },
+      { en: "Is there a discount?", it: "C'è uno sconto?" },
+      { en: "Can I have a receipt?", it: "Posso avere lo scontrino?" },
+      { en: "I will take this one.", it: "Prendo questo." }
+    ]
+  },
+  {
+    id: "emergency",
+    title: "Aiuto / emergenza",
+    items: [
+      { en: "I need help, please.", it: "Ho bisogno di aiuto, per favore." },
+      { en: "I have lost my passport.", it: "Ho perso il passaporto." },
+      { en: "Where is the nearest pharmacy?", it: "Dov'è la farmacia più vicina?" },
+      { en: "I do not feel well.", it: "Non mi sento bene." },
+      { en: "Call a doctor, please.", it: "Chiami un medico, per favore." },
+      { en: "Is there a hospital nearby?", it: "C'è un ospedale qui vicino?" },
+      { en: "I do not understand.", it: "Non capisco." },
+      { en: "Please speak more slowly.", it: "Per favore parli più lentamente." }
+    ]
+  },
+  {
+    id: "taxi",
+    title: "Taxi",
+    items: [
+      { en: "Can you take me to the station, please?", it: "Può portarmi in stazione, per favore?" },
+      { en: "How much will it cost?", it: "Quanto costerà?" },
+      { en: "Please stop here.", it: "Si fermi qui, per favore." },
+      { en: "Keep the change.", it: "Tenga il resto." },
+      { en: "Could you wait five minutes?", it: "Può aspettare cinque minuti?" },
+      { en: "I need a taxi to the airport.", it: "Mi serve un taxi per l'aeroporto." },
+      { en: "Is this seat free?", it: "Questo posto è libero?" },
+      { en: "Please go faster, I am late.", it: "Vada più veloce, per favore, sono in ritardo." }
+    ]
+  },
+  {
+    id: "train",
+    title: "Stazione / treno",
+    items: [
+      { en: "A return ticket to Milan, please.", it: "Un biglietto di andata e ritorno per Milano, per favore." },
+      { en: "Which platform for Rome?", it: "Quale binario per Roma?" },
+      { en: "Is this the train to Florence?", it: "Questo è il treno per Firenze?" },
+      { en: "Do I need to reserve a seat?", it: "Devo prenotare un posto?" },
+      { en: "Where is the ticket office?", it: "Dov'è la biglietteria?" },
+      { en: "The train is delayed by twenty minutes.", it: "Il treno è in ritardo di venti minuti." },
+      { en: "Is there a direct train?", it: "C'è un treno diretto?" },
+      { en: "What time is the next train?", it: "A che ora è il prossimo treno?" }
+    ]
+  },
+  {
+    id: "weather",
+    title: "Meteo",
+    items: [
+      { en: "What is the weather like today?", it: "Che tempo fa oggi?" },
+      { en: "It is going to rain this afternoon.", it: "Pioverà questo pomeriggio." },
+      { en: "It is very hot outside.", it: "Fuori fa molto caldo." },
+      { en: "You should take an umbrella.", it: "Dovresti prendere un ombrello." },
+      { en: "It was cold yesterday.", it: "Ieri faceva freddo." },
+      { en: "Is it windy at the beach?", it: "C'è vento in spiaggia?" },
+      { en: "The weather is perfect for a walk.", it: "Il tempo è perfetto per una passeggiata." },
+      { en: "It might snow tomorrow.", it: "Potrebbe nevicare domani." }
+    ]
+  },
+  {
+    id: "cafe",
+    title: "Bar / caffè",
+    items: [
+      { en: "A coffee to go, please.", it: "Un caffè da asporto, per favore." },
+      { en: "Do you have oat milk?", it: "Avete il latte d'avena?" },
+      { en: "I would like a cappuccino.", it: "Vorrei un cappuccino." },
+      { en: "For here or to go?", it: "Per qui o da asporto?" },
+      { en: "Can I have the Wi-Fi password?", it: "Posso avere la password del Wi-Fi?" },
+      { en: "Is there a power socket free?", it: "C'è una presa libera?" },
+      { en: "A bottle of water, please.", it: "Una bottiglia d'acqua, per favore." },
+      { en: "That is all, thank you.", it: "È tutto, grazie." }
+    ]
+  },
+  {
+    id: "pharmacy",
+    title: "Farmacia",
+    items: [
+      { en: "I need something for a headache.", it: "Mi serve qualcosa per il mal di testa." },
+      { en: "Do I need a prescription?", it: "Serve la ricetta?" },
+      { en: "How often should I take this?", it: "Ogni quanto devo prenderlo?" },
+      { en: "I have a sore throat.", it: "Ho mal di gola." },
+      { en: "Is this available over the counter?", it: "Si può comprare senza ricetta?" },
+      { en: "I am allergic to penicillin.", it: "Sono allergico alla penicillina." },
+      { en: "Can you recommend something?", it: "Può consigliarmi qualcosa?" },
+      { en: "Thank you for your help.", it: "Grazie per l'aiuto." }
+    ]
+  }
+];
+
+window.WRITE_PROMPTS = [
+  {
+    id: "w1",
+    level: "A1",
+    title: "Presentati",
+    prompt_it: "Scrivi 3–4 frasi per presentarti: nome, età, città, lavoro o studi.",
+    tips: [
+      "Usa: My name is… / I am… years old.",
+      "I live in… / I am a student / I work as…",
+      "Chiudi con: Nice to meet you."
+    ],
+    example: "My name is Luca. I am 28 years old. I live in Rome. I work in an office. Nice to meet you!",
+    keywords: ["name", "live", "years", "work", "student"]
+  },
+  {
+    id: "w2",
+    level: "A1",
+    title: "In hotel",
+    prompt_it: "Scrivi cosa diresti alla reception: hai una prenotazione e chiedi a che ora è la colazione.",
+    tips: [
+      "I have a reservation under…",
+      "What time is breakfast?",
+      "Is breakfast included?"
+    ],
+    example: "Good evening. I have a reservation under Bianchi. What time is breakfast? Is it included?",
+    keywords: ["reservation", "breakfast", "included", "hotel", "room"]
+  },
+  {
+    id: "w3",
+    level: "A2",
+    title: "Al ristorante",
+    prompt_it: "Ordina un piatto, chiedi se è piccante e chiedi il conto.",
+    tips: [
+      "I would like… / Could I have…",
+      "Is it spicy?",
+      "Could we have the bill, please?"
+    ],
+    example: "I would like the pasta, please. Is it spicy? Could we have the bill, please?",
+    keywords: ["would like", "please", "spicy", "bill", "menu"]
+  },
+  {
+    id: "w4",
+    level: "A2",
+    title: "Chiedere indicazioni",
+    prompt_it: "Chiedi dov'è il museo e se è lontano a piedi.",
+    tips: [
+      "Excuse me, where is…?",
+      "How do I get to…?",
+      "Is it far from here? / How long does it take on foot?"
+    ],
+    example: "Excuse me, where is the museum? Is it far from here? How long does it take on foot?",
+    keywords: ["excuse", "where", "far", "museum", "foot"]
+  },
+  {
+    id: "w5",
+    level: "A2",
+    title: "La tua giornata",
+    prompt_it: "Descrivi la tua routine di ieri in 4–5 frasi (past simple).",
+    tips: [
+      "Ieri = yesterday + past simple (went, had, saw…)",
+      "In the morning… / Then… / In the evening…",
+      "Verbi irregolari: go→went, have→had, see→saw"
+    ],
+    example: "Yesterday I woke up at seven. I had breakfast and went to work. In the evening I watched a film. I went to bed late.",
+    keywords: ["yesterday", "went", "had", "woke", "watched"]
+  },
+  {
+    id: "w6",
+    level: "B1",
+    title: "Email di prenotazione",
+    prompt_it: "Scrivi una breve email formale per prenotare una camera per due notti.",
+    tips: [
+      "Inizio: Dear Sir or Madam,",
+      "I am writing to book… / I would like to reserve…",
+      "Chiedi prezzo e se la colazione è inclusa.",
+      "Chiusura: I look forward to hearing from you. / Yours faithfully,"
+    ],
+    example: "Dear Sir or Madam,\nI am writing to book a double room for two nights from 10 to 12 June.\nCould you please tell me the price and if breakfast is included?\nI look forward to hearing from you.\nYours faithfully,\nMarco Rossi",
+    keywords: ["dear", "writing", "book", "room", "breakfast", "faithfully"]
+  },
+  {
+    id: "w7",
+    level: "B1",
+    title: "Opinione",
+    prompt_it: "In 4–6 frasi: secondo te è meglio viaggiare in treno o in aereo? Perché?",
+    tips: [
+      "In my opinion… / I think that…",
+      "On the one hand… on the other hand…",
+      "Usa because / so / however"
+    ],
+    example: "In my opinion, trains are better for short trips. They are cheaper and more comfortable. On the other hand, planes are faster for long distances. I usually prefer the train because I can work during the journey.",
+    keywords: ["opinion", "because", "prefer", "however", "think"]
+  },
+  {
+    id: "w8",
+    level: "A1",
+    title: "Shopping",
+    prompt_it: "Sei in un negozio: chiedi il prezzo, una taglia più piccola e se puoi pagare con la carta.",
+    tips: [
+      "How much does it cost? / How much is it?",
+      "Do you have a smaller size?",
+      "Can I pay by card?"
+    ],
+    example: "How much does this shirt cost? Do you have a smaller size? Can I pay by card?",
+    keywords: ["much", "cost", "size", "card", "pay"]
+  },
+
+  {
+    id: "w9",
+    level: "A2",
+    title: "Taxi e stazione",
+    prompt_it: "Scrivi cosa diresti al tassista (destinazione + chiedi il prezzo) e poi in stazione (biglietto di andata e ritorno).",
+    tips: [
+      "Can you take me to…? / How much will it cost?",
+      "A return ticket to…, please.",
+      "Which platform…?"
+    ],
+    example: "Can you take me to the station, please? How much will it cost?\nA return ticket to Milan, please. Which platform for Milan?",
+    keywords: ["take", "station", "cost", "ticket", "return", "platform"]
+  },
+  {
+    id: "w10",
+    level: "A2",
+    title: "Al bar",
+    prompt_it: "Ordina un caffè da asporto e chiedi la password del Wi-Fi.",
+    tips: [
+      "A coffee to go, please.",
+      "I would like a cappuccino.",
+      "Can I have the Wi-Fi password?"
+    ],
+    example: "A cappuccino to go, please. Can I have the Wi-Fi password?",
+    keywords: ["coffee", "cappuccino", "please", "wifi", "password", "to go"]
+  },
+  {
+    id: "w11",
+    level: "B1",
+    title: "Reclamo hotel",
+    prompt_it: "Scrivi un messaggio educato: in camera il condizionatore non funziona e chiedi di cambiare stanza.",
+    tips: [
+      "I am writing to report a problem…",
+      "The air conditioning is not working.",
+      "Could I change rooms, please?",
+      "Tono cortese: Could you… / I would be grateful if…"
+    ],
+    example: "Dear Reception,\nI am writing because the air conditioning in my room is not working.\nCould I change to another room, please?\nThank you for your help.",
+    keywords: ["writing", "air conditioning", "working", "change", "room", "please"]
+  },
+  {
+    id: "w12",
+    level: "A1",
+    title: "Meteo e piani",
+    prompt_it: "Scrivi 3 frasi: che tempo fa oggi e cosa farai se piove.",
+    tips: [
+      "It is sunny / rainy / cold today.",
+      "If it rains, I will stay at home.",
+      "I am going to…"
+    ],
+    example: "It is cloudy today. If it rains, I will stay at home. I am going to read a book.",
+    keywords: ["today", "rain", "if", "will", "going"]
+  },
+
+];
+

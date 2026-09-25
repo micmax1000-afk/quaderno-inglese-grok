@@ -30,6 +30,10 @@
   let rtUsed = [];
   let abortController = null;
   let dialogueState = null; // { pack, lineIndex }
+  let listenPackId = null; // null = mixed offline sentences
+  let listenIndex = 0;
+  let currentListenItem = null; // {en, it}
+  let writePromptIndex = 0;
 
   // ─── Utils ───────────────────────────────────────────────
   const $ = (sel, el = document) => el.querySelector(sel);
@@ -136,7 +140,168 @@
   }
 
   // ─── Navigation ──────────────────────────────────────────
+
+  function initWritePanel() {
+    const chips = $('#writeChips');
+    if (!chips) return;
+    const prompts = window.WRITE_PROMPTS || [];
+    if (!chips.dataset.ready) {
+      chips.innerHTML = '';
+      prompts.forEach((p, idx) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'chip' + (idx === writePromptIndex ? ' active' : '');
+        b.textContent = p.title;
+        b.addEventListener('click', () => {
+          writePromptIndex = idx;
+          chips.querySelectorAll('.chip').forEach((c) => c.classList.remove('active'));
+          b.classList.add('active');
+          loadWritePrompt();
+        });
+        chips.appendChild(b);
+      });
+      chips.dataset.ready = '1';
+    }
+    loadWritePrompt();
+  }
+
+  function loadWritePrompt() {
+    const prompts = window.WRITE_PROMPTS || [];
+    if (!prompts.length) return;
+    writePromptIndex = writePromptIndex % prompts.length;
+    const p = prompts[writePromptIndex];
+    if ($('#writeLevel')) $('#writeLevel').textContent = p.level || '';
+    if ($('#writeTitle')) $('#writeTitle').textContent = p.title || '';
+    if ($('#writePrompt')) $('#writePrompt').textContent = p.prompt_it || '';
+    const tips = $('#writeTips');
+    if (tips) {
+      tips.innerHTML = '<p class="label">Consigli</p><ul>' +
+        (p.tips || []).map((t) => '<li>' + t + '</li>').join('') + '</ul>';
+    }
+    if ($('#writeInput')) $('#writeInput').value = '';
+    const fb = $('#writeFeedback');
+    if (fb) { fb.hidden = true; fb.innerHTML = ''; }
+    const chips = $('#writeChips');
+    if (chips) {
+      chips.querySelectorAll('.chip').forEach((c, i) => {
+        c.classList.toggle('active', i === writePromptIndex);
+      });
+    }
+  }
+
+  function offlineWriteFeedback(p, text) {
+    const lower = text.toLowerCase();
+    const keys = p.keywords || [];
+    const hit = keys.filter((k) => lower.includes(k.toLowerCase()));
+    const score = keys.length ? Math.round((hit.length / keys.length) * 100) : 50;
+    let msg = '';
+    if (score >= 70) msg = '✅ Buon lavoro: hai usato diverse strutture utili.';
+    else if (score >= 40) msg = '🟡 Ok: prova ad aggiungere altre espressioni dai consigli.';
+    else msg = '🔴 Incompleta: rileggi i consigli e l’esempio, poi riprova.';
+    return (
+      '<p><strong>Feedback offline</strong> — parole chiave ~' + score + '%</p>' +
+      '<p>' + msg + '</p>' +
+      (hit.length ? '<p class="teal">Trovate: ' + hit.join(', ') + '</p>' : '') +
+      '<p class="label">Esempio modello</p><pre class="example-block">' +
+      (p.example || '') +
+      '</pre>' +
+      '<p class="hint">Confronta la tua versione con l’esempio. Non deve essere identica.</p>'
+    );
+  }
+
+  function writeSystem() {
+    return (
+      'Sei un insegnante di inglese per studenti italiani. ' +
+      'Correggi il testo dello studente in modo chiaro e gentile. ' +
+      'Rispondi SOLO in JSON valido con chiavi: ' +
+      '{"score":0-100,"corrected":"versione corretta in inglese",' +
+      '"translation":"traduzione italiana del testo corretto",' +
+      '"tips":["consiglio 1","consiglio 2"],"praise":"frase breve di incoraggiamento in italiano"}. ' +
+      'Non aggiungere markdown.'
+    );
+  }
+
+  async function checkWriting() {
+    const prompts = window.WRITE_PROMPTS || [];
+    const p = prompts[writePromptIndex];
+    if (!p) return;
+    const text = ($('#writeInput')?.value || '').trim();
+    const fb = $('#writeFeedback');
+    if (!fb) return;
+    if (!text) {
+      fb.hidden = false;
+      fb.innerHTML = '<p class="warn">Scrivi almeno una frase in inglese.</p>';
+      return;
+    }
+
+    // Always show offline feedback first (instant)
+    fb.hidden = false;
+    fb.innerHTML = offlineWriteFeedback(p, text) +
+      '<p class="hint" id="writeAiHint">Se online, Gemini può aggiungere correzione dettagliata…</p>';
+    touchStudy();
+
+    // Optional Gemini enrichment
+    const key = (typeof getKey === 'function' ? getKey() : '') || ($('#apiKey')?.value || '').trim();
+    if (!key) {
+      const h = $('#writeAiHint');
+      if (h) h.textContent = 'Aggiungi la API key in Impostazioni per la correzione AI.';
+      return;
+    }
+    try {
+      const userMsg =
+        'Tema: ' + (p.title || '') + '\n' +
+        'Consegna (IT): ' + (p.prompt_it || '') + '\n' +
+        'Testo studente (EN):\n' + text + '\n' +
+        'Esempio di riferimento:\n' + (p.example || '');
+      const r = await callGemini(writeSystem(), userMsg);
+      let data = r;
+      if (typeof r === 'string') {
+        try { data = JSON.parse(r); } catch (_) { data = {}; }
+      }
+      // callGemini may return object with fields already
+      const score = data.score != null ? data.score : '';
+      const corrected = data.corrected || data.sentence || '';
+      const translation = data.translation || data.italian || data.trans || '';
+      const tips = Array.isArray(data.tips) ? data.tips : [];
+      const praise = data.praise || '';
+      if (corrected || translation || tips.length) {
+        fb.innerHTML =
+          offlineWriteFeedback(p, text) +
+          '<hr style="border:none;border-top:1px solid var(--border,#334155);margin:12px 0">' +
+          '<p><strong>Correzione AI</strong>' +
+          (score !== '' ? ' — score ' + score + '/100' : '') +
+          '</p>' +
+          (praise ? '<p>' + praise + '</p>' : '') +
+          (corrected
+            ? '<p class="label">Versione corretta</p><pre class="example-block">' +
+              corrected +
+              '</pre>'
+            : '') +
+          (translation
+            ? '<p class="label">Traduzione IT</p><p class="teal">' + translation + '</p>'
+            : '') +
+          (tips.length
+            ? '<p class="label">Consigli AI</p><ul>' +
+              tips.map((t) => '<li>' + t + '</li>').join('') +
+              '</ul>'
+            : '');
+      }
+    } catch (e) {
+      const h = $('#writeAiHint');
+      if (h) h.textContent = 'AI non disponibile: resta il feedback offline. (' + (e.message || 'errore') + ')';
+    }
+  }
+
+
   function showScreen(name) {
+    // write is a learn tab, not a screen
+    if (name === 'write') {
+      name = 'learn';
+      setTimeout(() => {
+        const wb = Array.from(document.querySelectorAll('#learnTabs .seg')).find((x) => x.dataset.mode === 'write');
+        if (wb) wb.click();
+      }, 30);
+    }
     $$('.screen').forEach((s) => s.classList.toggle('active', s.dataset.screen === name));
     $$('#bottomNav button').forEach((b) =>
       b.classList.toggle('active', b.dataset.screen === name)
@@ -145,6 +310,9 @@
     if (name === 'learn') renderVocabList();
     if (name === 'home') updateHome();
     if (name === 'course') renderCourseList();
+    if (name === 'repeat') {
+      try { initListenChips(); } catch (_) {}
+    }
   }
 
   // ─── Speech ──────────────────────────────────────────────
@@ -838,20 +1006,96 @@
     return list[Math.floor(Math.random() * list.length)];
   }
 
+  function showListenItem(item, packTitle) {
+    currentListenItem = item;
+    currentRtSentence = item.en;
+    $('#rtSentence').textContent = item.en;
+    const itEl = $('#rtItTrans');
+    if (itEl) {
+      itEl.textContent = item.it || '';
+      itEl.hidden = true;
+    }
+    if ($('#rtPackLabel')) $('#rtPackLabel').textContent = packTitle || 'Frase';
+    $('#rtResult').hidden = true;
+    setRtStatus('⚡ Ascolto offline');
+    speak(item.en);
+  }
+
+  function nextListenFromPack() {
+    const packs = window.LISTEN_PACKS || [];
+    let pack = packs.find((p) => p.id === listenPackId);
+    if (!pack && packs.length) {
+      // mixed: flatten
+      const all = packs.flatMap((p) => p.items.map((it) => ({ ...it, _title: p.title })));
+      if (!all.length) return false;
+      listenIndex = listenIndex % all.length;
+      const item = all[listenIndex++];
+      showListenItem(item, item._title || 'Viaggio');
+      return true;
+    }
+    if (!pack || !pack.items?.length) return false;
+    listenIndex = listenIndex % pack.items.length;
+    showListenItem(pack.items[listenIndex++], pack.title);
+    return true;
+  }
+
+  function initListenChips() {
+    const row = $('#listenChips');
+    if (!row || row.dataset.ready) return;
+    const packs = window.LISTEN_PACKS || [];
+    row.innerHTML = '';
+    const allBtn = document.createElement('button');
+    allBtn.type = 'button';
+    allBtn.className = 'chip active';
+    allBtn.textContent = 'Tutti';
+    allBtn.addEventListener('click', () => {
+      listenPackId = null;
+      listenIndex = 0;
+      row.querySelectorAll('.chip').forEach((c) => c.classList.remove('active'));
+      allBtn.classList.add('active');
+      generateRtSentence();
+    });
+    row.appendChild(allBtn);
+    packs.forEach((p) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.textContent = p.title;
+      b.addEventListener('click', () => {
+        listenPackId = p.id;
+        listenIndex = 0;
+        row.querySelectorAll('.chip').forEach((c) => c.classList.remove('active'));
+        b.classList.add('active');
+        generateRtSentence();
+      });
+      row.appendChild(b);
+    });
+    row.dataset.ready = '1';
+  }
+
   async function generateRtSentence() {
     setRtStatus('Genero frase…', false, true);
     $('#rtResult').hidden = true;
     $('#rtSentence').textContent = '…';
     const preferOffline = $('#offlineSentences')?.checked !== false;
 
+    // 0) Listen pack (travel phrases with IT)
+    if (preferOffline && (listenPackId || window.LISTEN_PACKS?.length)) {
+      if (nextListenFromPack()) return;
+    }
+
     // 1) Offline first (instant)
     if (preferOffline) {
       const offline = pickOfflineSentence();
       if (offline) {
         currentRtSentence = offline;
+        currentListenItem = null;
         rtUsed.push(offline);
         if (rtUsed.length > 40) rtUsed = rtUsed.slice(-40);
         $('#rtSentence').textContent = currentRtSentence;
+        const itEl = $('#rtItTrans');
+        if (itEl) { itEl.textContent = ''; itEl.hidden = true; }
+        if ($('#rtPackLabel')) $('#rtPackLabel').textContent = 'Frase libera';
         setRtStatus('⚡ Frase offline');
         speak(currentRtSentence);
         return;
@@ -1389,9 +1633,12 @@
   function courseUnitsMeta() {
     return [
       { id: 'all', label: 'Tutte' },
-      { id: 'base', label: 'Basi', range: [0, 5] },
-      { id: 'daily', label: 'Vita quotidiana', range: [6, 11] },
-      { id: 'a2', label: 'Verso A2', range: [12, 17] }
+      { id: 'a1a', label: 'A1 · basi', range: [0, 7] },
+      { id: 'a1b', label: 'A1 · vita', range: [8, 15] },
+      { id: 'a2a', label: 'A2 · grammatica', range: [16, 23] },
+      { id: 'a2b', label: 'A2 · situazioni', range: [24, 31] },
+      { id: 'b1', label: 'B1', range: [32, 36] },
+      { id: 'b2', label: 'B2', range: [37, 41] }
     ];
   }
 
@@ -1722,6 +1969,26 @@
     $('#rtListen').addEventListener('click', () => {
       if (currentRtSentence) speak(currentRtSentence);
     });
+    $('#rtListenBoth')?.addEventListener('click', () => {
+      if (!currentRtSentence) return;
+      const it = currentListenItem?.it || $('#rtItTrans')?.textContent || '';
+      if (it) {
+        speakSequence([
+          { text: currentRtSentence, lang: 'en-GB', pauseAfter: 400 },
+          { text: it, lang: 'it-IT', pauseAfter: 200 }
+        ]);
+      } else speak(currentRtSentence);
+    });
+    $('#rtShowIt')?.addEventListener('click', () => {
+      const itEl = $('#rtItTrans');
+      if (!itEl) return;
+      if (!currentListenItem?.it && !itEl.textContent) {
+        setRtStatus('Traduzione disponibile nei temi viaggio');
+        return;
+      }
+      itEl.hidden = !itEl.hidden;
+      if (!itEl.hidden && currentListenItem?.it) itEl.textContent = currentListenItem.it;
+    });
     let rtRec = null;
     $('#rtMic').addEventListener('click', () => {
       if (!currentRtSentence) {
@@ -1760,8 +2027,27 @@
         );
         if (b.dataset.mode === 'review') nextReview();
         if (b.dataset.mode === 'list') renderVocabList();
+        if (b.dataset.mode === 'write') initWritePanel();
       })
     );
+
+    $('#writeCheck')?.addEventListener('click', checkWriting);
+    $('#writeExample')?.addEventListener('click', () => {
+      const p = (window.WRITE_PROMPTS || [])[writePromptIndex];
+      if (!p) return;
+      if ($('#writeInput')) $('#writeInput').value = p.example || '';
+      const fb = $('#writeFeedback');
+      if (fb) {
+        fb.hidden = false;
+        fb.innerHTML = '<p class="hint">Esempio caricato. Puoi modificarlo e premere Controlla.</p>';
+      }
+    });
+    $('#writeNext')?.addEventListener('click', () => {
+      const prompts = window.WRITE_PROMPTS || [];
+      if (!prompts.length) return;
+      writePromptIndex = (writePromptIndex + 1) % prompts.length;
+      loadWritePrompt();
+    });
 
     $('#reviewReveal').addEventListener('click', () => {
       if (!currentReview) return;

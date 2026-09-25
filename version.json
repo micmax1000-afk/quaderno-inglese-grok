@@ -1,10 +1,8 @@
 {
-  "version": "16.10",
+  "version": "16.15",
   "date": "2026-09-25",
   "changes": [
-    "Corso: apertura lezione a schermo intero (niente lista sopra)",
-    "Flusso tipo riferimento: 1 Impara · 2 Ascolta · 3 Controlla · 4 Completa",
-    "Parole a chip con audio EN+IT, frasi con speaker",
-    "Prova a dirlo con microfono, quiz e completa lezione"
+    "Ascolto: + taxi, stazione/treno, meteo, bar, farmacia (11 temi viaggio)",
+    "Scrivi: +4 prompt; feedback offline + correzione Gemini con versione corretta e traduzione IT"
   ]
 }

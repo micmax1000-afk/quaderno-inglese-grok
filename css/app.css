@@ -766,3 +766,61 @@ code {
 }
 .lesson-panel { animation: fadeIn .2s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* Write + listen */
+.chip-row { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; }
+.chip {
+  border:1px solid var(--border, #334155);
+  background: var(--card, #1e293b);
+  color: var(--text, #e2e8f0);
+  border-radius:999px;
+  padding:6px 12px;
+  font-size:13px;
+  cursor:pointer;
+}
+.chip.active, .chip:hover {
+  border-color: var(--accent, #38bdf8);
+  color: var(--accent, #38bdf8);
+}
+.write-card .tips {
+  background: rgba(56,189,248,.08);
+  border-radius:12px;
+  padding:10px 12px;
+  margin:10px 0 14px;
+  font-size:13px;
+  line-height:1.45;
+}
+.write-card .tips ul { margin:6px 0 0 18px; padding:0; }
+.write-card textarea {
+  width:100%;
+  min-height:110px;
+  border-radius:12px;
+  border:1px solid var(--border, #334155);
+  background: var(--bg, #0f172a);
+  color: var(--text, #e2e8f0);
+  padding:12px;
+  font: inherit;
+  resize: vertical;
+}
+.write-feedback {
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  background: rgba(15,23,42,.6);
+  border:1px solid var(--border, #334155);
+  font-size:14px;
+  line-height:1.45;
+}
+.write-feedback .example-block {
+  white-space: pre-wrap;
+  font-family: inherit;
+  background: rgba(56,189,248,.06);
+  padding:10px;
+  border-radius:8px;
+  margin:8px 0 0;
+}
+#rtItTrans {
+  margin:8px 0 0;
+  color: var(--accent, #5eead4);
+  font-size:15px;
+}

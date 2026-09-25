@@ -65,6 +65,11 @@
           <strong>Oxford / Vocabolario</strong>
           <small>Parole + ripasso</small>
         </button>
+        <button type="button" class="action-card" data-go="write">
+          <span class="ac-icon">✍️</span>
+          <strong>Scrivi</strong>
+          <small>Guidato + esempio</small>
+        </button>
         <button type="button" class="action-card" data-go="tutor">
           <span class="ac-icon">🧠</span>
           <strong>AI Tutor</strong>
@@ -104,18 +109,22 @@
     <!-- REPEAT -->
     <section class="screen" data-screen="repeat">
       <div class="screen-head">
-        <h2>Ripeti e traduci</h2>
+        <h2>Ascolta e ripeti</h2>
         <span class="badge" id="rtDiffBadge">Diff. 3/10</span>
       </div>
+      <div class="chip-row" id="listenChips"></div>
       <div class="card center-card">
-        <p class="label">Ripeti questa frase</p>
-        <p class="sentence" id="rtSentence">Premi “Nuova frase”</p>
+        <p class="label" id="rtPackLabel">Frase</p>
+        <p class="sentence" id="rtSentence">Scegli un tema o premi Prossima</p>
+        <p class="trans" id="rtItTrans" hidden></p>
         <div class="btn-row">
-          <button type="button" class="ghost-btn" id="rtListen">🔊 Ascolta</button>
-          <button type="button" class="ghost-btn" id="rtNew">Nuova frase</button>
+          <button type="button" class="ghost-btn" id="rtListen">🔊 EN</button>
+          <button type="button" class="ghost-btn" id="rtListenBoth">🔊 EN+IT</button>
+          <button type="button" class="ghost-btn" id="rtShowIt">IT</button>
+          <button type="button" class="ghost-btn" id="rtNew">Prossima</button>
         </div>
         <button type="button" class="mic-big" id="rtMic" title="Parla">🎙️</button>
-        <p class="hint" id="rtHint">Premi e ripeti</p>
+        <p class="hint" id="rtHint">Ascolta, poi ripeti ad alta voce</p>
       </div>
       <div class="card result-card" id="rtResult" hidden>
         <div class="result-row"><span class="k">Hai detto</span><div id="rtSaid"></div></div>
@@ -124,7 +133,7 @@
       </div>
       <div class="status-line" id="rtStatus"></div>
       <div class="diff-control">
-        <label>Difficoltà <b id="rtDiffVal">3</b></label>
+        <label>Difficoltà frasi libere <b id="rtDiffVal">3</b></label>
         <input type="range" id="rtDiff" min="1" max="10" value="3">
       </div>
     </section>
@@ -137,6 +146,7 @@
       <div class="seg-control" id="learnTabs">
         <button type="button" class="seg active" data-mode="review">Ripasso</button>
         <button type="button" class="seg" data-mode="oxford">Oxford</button>
+        <button type="button" class="seg" data-mode="write">Scrivi</button>
         <button type="button" class="seg" data-mode="list">Elenco</button>
       </div>
 
@@ -186,6 +196,26 @@
         </div>
       </div>
 
+      <div class="learn-panel" data-mode="write">
+        <div class="chip-row" id="writeChips"></div>
+        <div class="card write-card">
+          <p class="label" id="writeLevel">A1</p>
+          <h3 id="writeTitle">—</h3>
+          <p id="writePrompt">Scegli un tema sopra.</p>
+          <div class="tips" id="writeTips"></div>
+          <label class="field">
+            <span>La tua risposta in inglese</span>
+            <textarea id="writeInput" rows="5" placeholder="Write here…"></textarea>
+          </label>
+          <div class="btn-row">
+            <button type="button" class="primary-btn" id="writeCheck">Controlla</button>
+            <button type="button" class="ghost-btn" id="writeExample">Esempio</button>
+            <button type="button" class="ghost-btn" id="writeNext">Altro tema</button>
+          </div>
+          <div class="write-feedback" id="writeFeedback" hidden></div>
+        </div>
+      </div>
+
       <div class="learn-panel" data-mode="list">
         <div class="list-add">
           <input type="text" id="manualWord" placeholder="Parola in inglese">
@@ -223,13 +253,13 @@
       <div id="courseOverview">
         <div class="screen-head">
           <h2>Corso A1–A2</h2>
-          <span class="badge" id="courseProgressBadge">0/18</span>
+          <span class="badge" id="courseProgressBadge">0/42</span>
         </div>
         <div class="card course-hero">
           <div class="course-hero-top">
             <div>
               <span class="label">Studia offline, passo dopo passo</span>
-              <strong id="courseHeroTitle">18 lezioni</strong>
+              <strong id="courseHeroTitle">42 lezioni</strong>
             </div>
             <div class="course-ring" id="courseRing"><span id="courseRingPct">0%</span></div>
           </div>
