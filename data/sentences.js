@@ -246,27 +246,27 @@ window.DIALOGUE_PACKS = {
     {
       title: "Al bar",
       lines: [
-        { role: "ai", text: "Hi! What would you like to drink?" },
-        { role: "user_hint", text: "I'd like a coffee, please." },
-        { role: "ai", text: "Sure. Anything else?" },
-        { role: "user_hint", text: "No, thank you. How much is it?" }
+        { role: "ai", text: "Hi! What would you like to drink?", it: "Ciao! Cosa vorresti bere?" },
+        { role: "user_hint", text: "I'd like a coffee, please.", it: "Vorrei un caffè, per favore." },
+        { role: "ai", text: "Sure. Anything else?", it: "Certo. Altro?" },
+        { role: "user_hint", text: "No, thank you. How much is it?", it: "No, grazie. Quanto costa?" }
       ]
     },
     {
       title: "Presentarsi",
       lines: [
-        { role: "ai", text: "Hello! What is your name?" },
-        { role: "user_hint", text: "My name is Marco. Nice to meet you." },
-        { role: "ai", text: "Nice to meet you too. Where are you from?" },
+        { role: "ai", text: "Hello! What is your name?", it: "Ciao! Come ti chiami?" },
+        { role: "user_hint", text: "My name is Marco. Nice to meet you.", it: "Mi chiamo Marco. Piacere di conoscerti." },
+        { role: "ai", text: "Nice to meet you too. Where are you from?", it: "Anche io, piacere. Di dove sei?" },
         { role: "user_hint", text: "I am from Italy. And you?" }
       ]
     },
     {
       title: "Direzioni",
       lines: [
-        { role: "ai", text: "Excuse me, where is the station?" },
+        { role: "ai", text: "Excuse me, where is the station?", it: "Mi scusi, dov'è la stazione?" },
         { role: "user_hint", text: "Go straight and turn left." },
-        { role: "ai", text: "Is it far from here?" },
+        { role: "ai", text: "Is it far from here?", it: "È lontano da qui?" },
         { role: "user_hint", text: "No, it is about five minutes." }
       ]
     }
@@ -275,25 +275,25 @@ window.DIALOGUE_PACKS = {
     {
       title: "Prenotare un tavolo",
       lines: [
-        { role: "ai", text: "Good evening. Do you have a reservation?" },
+        { role: "ai", text: "Good evening. Do you have a reservation?", it: "Buonasera. Ha una prenotazione?" },
         { role: "user_hint", text: "Yes, a table for two under Rossi." },
-        { role: "ai", text: "Perfect. Would you like a window seat?" },
+        { role: "ai", text: "Perfect. Would you like a window seat?", it: "Perfetto. Preferisce un posto al finestrino?" },
         { role: "user_hint", text: "Yes, please. That would be great." }
       ]
     },
     {
       title: "Al negozio",
       lines: [
-        { role: "ai", text: "Can I help you?" },
+        { role: "ai", text: "Can I help you?", it: "Posso aiutarla?" },
         { role: "user_hint", text: "I am looking for a blue shirt, medium size." },
-        { role: "ai", text: "This one is on sale. Would you like to try it on?" },
+        { role: "ai", text: "This one is on sale. Would you like to try it on?", it: "Questo è in saldo. Vuole provarlo?" },
         { role: "user_hint", text: "Yes, where is the fitting room?" }
       ]
     },
     {
       title: "Weekend",
       lines: [
-        { role: "ai", text: "What did you do last weekend?" },
+        { role: "ai", text: "What did you do last weekend?", it: "Cosa hai fatto lo scorso weekend?" },
         { role: "user_hint", text: "I visited my grandparents and watched a film." },
         { role: "ai", text: "Sounds nice. Are you free next Saturday?" },
         { role: "user_hint", text: "Yes, maybe we can go for a walk." }
@@ -349,10 +349,10 @@ window.DIALOGUE_PACKS = {
   P.A1.push({
     title: "Dal medico",
     lines: [
-      { role: "ai", text: "Good morning. What seems to be the problem?" },
-      { role: "user_hint", text: "I have a headache and a sore throat." },
-      { role: "ai", text: "How long have you felt like this?" },
-      { role: "user_hint", text: "Since yesterday evening." }
+      { role: "ai", text: "Good morning. What seems to be the problem?", it: "Buongiorno. Qual è il problema?" },
+      { role: "user_hint", text: "I have a headache and a sore throat.", it: "Ho mal di testa e mal di gola." },
+      { role: "ai", text: "How long have you felt like this?", it: "Da quanto tempo si sente così?" },
+      { role: "user_hint", text: "Since yesterday evening.", it: "Da ieri sera." }
     ]
   });
   P.A2.push({
@@ -608,46 +608,46 @@ window.DIALOGUE_PACKS = {
   const packs = {
     A1: [
       { title: "Al bar", lines: [
-        { role: "ai", text: "Hi! What would you like?" },
-        { role: "user_hint", text: "A coffee and a sandwich, please." },
-        { role: "ai", text: "For here or to go?" },
-        { role: "user_hint", text: "To go, please." }
+        { role: "ai", text: "Hi! What would you like?", it: "Ciao! Cosa desidera?" },
+        { role: "user_hint", text: "A coffee and a sandwich, please.", it: "Un caffè e un panino, per favore." },
+        { role: "ai", text: "For here or to go?", it: "Per qui o da asporto?" },
+        { role: "user_hint", text: "To go, please.", it: "Da asporto, per favore." }
       ]},
       { title: "Al supermercato", lines: [
-        { role: "ai", text: "Excuse me, where is the milk?" },
-        { role: "user_hint", text: "It is in aisle three, next to the yoghurt." },
-        { role: "ai", text: "Thank you very much." },
-        { role: "user_hint", text: "You are welcome." }
+        { role: "ai", text: "Excuse me, where is the milk?", it: "Mi scusi, dov'è il latte?" },
+        { role: "user_hint", text: "It is in aisle three, next to the yoghurt.", it: "È al corridoio tre, vicino allo yogurt." },
+        { role: "ai", text: "Thank you very much.", it: "Grazie mille." },
+        { role: "user_hint", text: "You are welcome.", it: "Prego." }
       ]}
     ],
     A2: [
       { title: "In hotel", lines: [
-        { role: "ai", text: "Good evening. Do you have a reservation?" },
-        { role: "user_hint", text: "Yes, under the name Rossi." },
-        { role: "ai", text: "A double room for two nights. Is that correct?" },
-        { role: "user_hint", text: "Yes. What time is breakfast?" }
+        { role: "ai", text: "Good evening. Do you have a reservation?", it: "Buonasera. Ha una prenotazione?" },
+        { role: "user_hint", text: "Yes, under the name Rossi.", it: "Sì, a nome Rossi." },
+        { role: "ai", text: "A double room for two nights. Is that correct?", it: "Una camera doppia per due notti. È corretto?" },
+        { role: "user_hint", text: "Yes. What time is breakfast?", it: "Sì. A che ora è la colazione?" }
       ]},
       { title: "Dal farmacista", lines: [
-        { role: "ai", text: "Good morning. How can I help you?" },
-        { role: "user_hint", text: "I need something for a headache." },
-        { role: "ai", text: "Have you taken any medicine today?" },
-        { role: "user_hint", text: "No, not yet." }
+        { role: "ai", text: "Good morning. How can I help you?", it: "Buongiorno. Come posso aiutarla?" },
+        { role: "user_hint", text: "I need something for a headache.", it: "Mi serve qualcosa per il mal di testa." },
+        { role: "ai", text: "Have you taken any medicine today?", it: "Ha preso medicine oggi?" },
+        { role: "user_hint", text: "No, not yet.", it: "No, non ancora." }
       ]}
     ],
     B1: [
       { title: "Chiedere indicazioni", lines: [
-        { role: "ai", text: "Sorry to bother you. Is the museum this way?" },
-        { role: "user_hint", text: "Yes. Go straight for two blocks and turn right." },
-        { role: "ai", text: "How long does it take on foot?" },
-        { role: "user_hint", text: "About ten minutes." }
+        { role: "ai", text: "Sorry to bother you. Is the museum this way?", it: "Scusi il disturbo. Il museo è da questa parte?" },
+        { role: "user_hint", text: "Yes. Go straight for two blocks and turn right.", it: "Sì. Vada dritto per due isolati e giri a destra." },
+        { role: "ai", text: "How long does it take on foot?", it: "Quanto ci vuole a piedi?" },
+        { role: "user_hint", text: "About ten minutes.", it: "Circa dieci minuti." }
       ]}
     ],
     B2: [
       { title: "Riunione di lavoro", lines: [
-        { role: "ai", text: "Shall we start with the quarterly results?" },
-        { role: "user_hint", text: "Yes. Sales are up five percent compared to last year." },
-        { role: "ai", text: "What is driving the growth?" },
-        { role: "user_hint", text: "Mainly the new product line in Europe." }
+        { role: "ai", text: "Shall we start with the quarterly results?", it: "Iniziamo con i risultati trimestrali?" },
+        { role: "user_hint", text: "Yes. Sales are up five percent compared to last year.", it: "Sì. Le vendite sono salite del cinque percento rispetto all'anno scorso." },
+        { role: "ai", text: "What is driving the growth?", it: "Cosa sta guidando la crescita?" },
+        { role: "user_hint", text: "Mainly the new product line in Europe.", it: "Soprattutto la nuova linea di prodotti in Europa." }
       ]}
     ]
   };
@@ -1015,3 +1015,39 @@ window.WRITE_PROMPTS = [
 
 ];
 
+
+/* Mappa traduzioni dialoghi (fallback) */
+window.DIALOGUE_IT = {
+  "Good morning. What seems to be the problem?": "Buongiorno. Qual è il problema?",
+  "I have a headache and a sore throat.": "Ho mal di testa e mal di gola.",
+  "How long have you felt like this?": "Da quanto tempo si sente così?",
+  "Since yesterday evening.": "Da ieri sera.",
+  "Hi! What would you like to drink?": "Ciao! Cosa vorresti bere?",
+  "I'd like a coffee, please.": "Vorrei un caffè, per favore.",
+  "Sure. Anything else?": "Certo. Altro?",
+  "No, thank you. How much is it?": "No, grazie. Quanto costa?",
+  "Hello! What is your name?": "Ciao! Come ti chiami?",
+  "My name is Marco. Nice to meet you.": "Mi chiamo Marco. Piacere.",
+  "Nice to meet you too. Where are you from?": "Anche io, piacere. Di dove sei?",
+  "I am from Italy.": "Sono italiano / vengo dall'Italia.",
+  "Excuse me, where is the station?": "Mi scusi, dov'è la stazione?",
+  "Go straight and turn left.": "Vada dritto e giri a sinistra.",
+  "Is it far from here?": "È lontano da qui?",
+  "No, about five minutes on foot.": "No, circa cinque minuti a piedi.",
+  "Good evening. Do you have a reservation?": "Buonasera. Ha una prenotazione?",
+  "Yes, under the name Rossi.": "Sì, a nome Rossi.",
+  "Perfect. Would you like a window seat?": "Perfetto. Preferisce un posto al finestrino?",
+  "Can I help you?": "Posso aiutarla?",
+  "I am looking for a jacket.": "Cerco una giacca.",
+  "This one is on sale. Would you like to try it on?": "Questo è in saldo. Vuole provarlo?",
+  "What did you do last weekend?": "Cosa hai fatto lo scorso weekend?",
+  "I visited some friends and watched a film.": "Ho visto degli amici e un film.",
+  "Your flight has been delayed by three hours.": "Il suo volo è in ritardo di tre ore.",
+  "That is frustrating. Is there any compensation or an earlier alternative?": "È frustrante. C'è un indennizzo o un'alternativa prima?",
+  "I can put you on a waitlist for the next available seat.": "Posso metterla in lista d'attesa per il prossimo posto libero.",
+  "Please do. I also need a meal voucher if possible.": "Sì, grazie. Mi serve anche un buono pasto, se possibile.",
+  "Shall we start with the quarterly results?": "Iniziamo con i risultati trimestrali?",
+  "Yes. Sales are up five percent compared to last year.": "Sì. Le vendite sono salite del cinque percento rispetto all'anno scorso.",
+  "What is driving the growth?": "Cosa sta guidando la crescita?",
+  "Mainly the new product line in Europe.": "Soprattutto la nuova linea di prodotti in Europa."
+};

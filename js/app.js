@@ -693,18 +693,27 @@
     return (
       `Insegnante inglese per studente italiano livello ${lvl}.` +
       (tp ? ` Tema: ${tp}.` : '') +
-      ' Correggi errori; reply in inglese breve (1-2 frasi); why in italiano. ' +
-      'SOLO JSON: {"corrections":[{"wrong":"","right":"","why":""}],"reply":""}'
+      ' Correggi errori. reply: 1-2 frasi in inglese. translation: traduzione italiana di reply. why in italiano. ' +
+      'SOLO JSON: {"corrections":[{"wrong":"","right":"","why":""}],"reply":"","translation":""}'
     );
   }
 
-  function addTalkBubble(role, text, streaming) {
+  function addTalkBubble(role, text, streaming, translation) {
     const empty = $('#talkEmpty');
     if (empty) empty.remove();
     const thread = $('#talkThread');
     const div = document.createElement('div');
     div.className = 'msg ' + (role === 'user' ? 'user' : 'ai') + (streaming ? ' streaming' : '');
-    div.textContent = text;
+    const body = document.createElement('div');
+    body.className = 'msg-body';
+    body.textContent = text || '';
+    div.appendChild(body);
+    if (role === 'ai' && translation) {
+      const tr = document.createElement('div');
+      tr.className = 'msg-it';
+      tr.textContent = translation;
+      div.appendChild(tr);
+    }
     if (role === 'ai' && !streaming) {
       const btn = document.createElement('button');
       btn.className = 'speak';
@@ -716,6 +725,35 @@
     thread.appendChild(div);
     thread.scrollTop = thread.scrollHeight;
     return div;
+  }
+
+  function setTalkBubbleContent(bubble, text, translation) {
+    if (!bubble) return;
+    let body = bubble.querySelector('.msg-body');
+    if (!body) {
+      // legacy bubble with only textContent
+      body = document.createElement('div');
+      body.className = 'msg-body';
+      const speakBtn = bubble.querySelector('.speak');
+      bubble.textContent = '';
+      bubble.appendChild(body);
+      if (speakBtn) bubble.appendChild(speakBtn);
+    }
+    body.textContent = text || '';
+    let tr = bubble.querySelector('.msg-it');
+    if (translation) {
+      if (!tr) {
+        tr = document.createElement('div');
+        tr.className = 'msg-it';
+        const speakBtn = bubble.querySelector('.speak');
+        if (speakBtn) bubble.insertBefore(tr, speakBtn);
+        else body.after(tr);
+      }
+      tr.textContent = translation;
+      tr.hidden = false;
+    } else if (tr) {
+      tr.remove();
+    }
   }
 
   function addCorrections(corrections) {
@@ -793,6 +831,15 @@
     advanceDialogueAI();
   }
 
+
+  function dialogueIt(line) {
+    if (!line) return '';
+    if (line.it || line.translation) return line.it || line.translation;
+    const map = window.DIALOGUE_IT || {};
+    const t = String(line.text || '').trim();
+    return map[t] || map[t.toLowerCase()] || '';
+  }
+
   function advanceDialogueAI() {
     if (!dialogueState) return;
     const { pack } = dialogueState;
@@ -801,7 +848,7 @@
       const line = pack.lines[dialogueState.lineIndex];
       dialogueState.lineIndex++;
       if (line.role === 'ai') {
-        addTalkBubble('ai', line.text, false);
+        addTalkBubble('ai', line.text, false, dialogueIt(line));
         talkHistory.push({ role: 'model', text: line.text });
         if (autoSpeak()) speak(line.text);
       } else if (line.role === 'user_hint') {

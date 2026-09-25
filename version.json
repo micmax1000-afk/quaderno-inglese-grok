@@ -1,9 +1,8 @@
 {
-  "version": "16.16",
+  "version": "16.17",
   "date": "2026-09-25",
   "changes": [
-    "Conversazione: traduzione italiana sotto ogni risposta AI",
-    "Oxford non parte più all’apertura app; auto off; audio solo nel tab Oxford",
-    "Scrivi: feedback più leggibile (card, badge, contrasto)"
+    "Conversazione: traduzione IT sotto messaggi AI (anche dialoghi offline)",
+    "Scrivi: feedback leggibile anche con tema chiaro"
   ]
 }
